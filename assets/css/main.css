@@ -2117,7 +2117,7 @@
 				padding: 0 1em 0 0;
 			}
 
-                ul.icons li a {
+            ul.icons li a:link {
                     text-decoration: none;
                 }
 
