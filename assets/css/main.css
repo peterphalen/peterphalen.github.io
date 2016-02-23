@@ -2118,7 +2118,7 @@
 			}
 
                 ul.icons li a {
-                    text-decoration:none;
+                    text-decoration: none;
                 }
 
 
@@ -2128,7 +2128,7 @@
 
 				ul.icons li .icon:before {
 					font-size: 1.25em;
-				}
+				}s
 
 		ul.actions {
 			cursor: default;
