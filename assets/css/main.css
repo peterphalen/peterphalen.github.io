@@ -2827,7 +2827,7 @@
 					}
 
 					#titleBar .toggle:before {
-						background: #25ADB8;
+						background: #222222;
 						color: #ffffff;
 						content: '\f0c9';
 						display: block;
