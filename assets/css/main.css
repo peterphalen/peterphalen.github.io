@@ -2512,6 +2512,8 @@
 			padding: 2em;
 			position: absolute;
 			width: 100%;
+            background-color: #25ADB8;
+            text-decoration: none;
 		}
 
 			#header > footer .icons {
