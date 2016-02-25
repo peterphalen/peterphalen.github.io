@@ -2512,7 +2512,7 @@
 			padding: 2em;
 			position: absolute;
 			width: 100%;
-            z-index: -1;
+            background-color: #25ADB8;
 		}
 
 			#header > footer .icons {
