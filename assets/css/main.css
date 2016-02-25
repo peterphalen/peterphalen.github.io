@@ -2521,6 +2521,7 @@
 
 				#header > footer .icons li a {
 					color: #b6e9dc;
+                    text-decoration: none;
 				}
 
 		#header > nav ul {
