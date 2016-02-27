@@ -2491,6 +2491,8 @@
 
 		#header > header {
 			padding: 3em;
+            background-color: #25ADB8;
+
 		}
 
 			#header > header .avatar {
