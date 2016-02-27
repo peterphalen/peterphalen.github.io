@@ -1701,6 +1701,7 @@
 
 	header p {
 		color: #aaa;
+        background-color: #25ADB8;
 		position: relative;
 		margin: 0 0 1.6875em 0;
 	}
@@ -2022,6 +2023,8 @@
 		.image.avatar {
 			border-radius: 100%;
 			overflow: hidden;
+            background: #25ADB8;
+
 		}
 
 			.image.avatar img {
@@ -2109,6 +2112,7 @@
 			cursor: default;
 			list-style: none;
 			padding-left: 0;
+            background: #25ADB8;
 
 		}
 
