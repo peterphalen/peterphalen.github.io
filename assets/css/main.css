@@ -2479,6 +2479,8 @@ input[type="button"]:disabled,
 
 #header header p {
     color: #b6e9dc;
+    background-color: #25ADB8;
+
 }
 
 #header a {
@@ -2504,6 +2506,8 @@ input[type="button"]:disabled,
 #header > header h1 {
 				font-size: 1.75em;
                 margin: 0;
+                background-color: #25ADB8;
+
 }
 
 #header > header p {
