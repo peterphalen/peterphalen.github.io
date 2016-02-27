@@ -2109,7 +2109,6 @@
 			cursor: default;
 			list-style: none;
 			padding-left: 0;
-            background-color: #25ADB8;
 
 		}
 
@@ -2519,6 +2518,8 @@
 
 			#header > footer .icons {
 				margin: 0;
+                text-decoration: none;
+
 			}
 
 				#header > footer .icons li a {
