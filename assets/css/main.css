@@ -2497,6 +2497,8 @@ input[type="button"]:disabled,
 				display: block;
                 margin: 0 auto 2.25em auto;
                 width: 8em;
+                background-color: #25ADB8;
+
 }
 
 #header > header h1 {
@@ -2508,6 +2510,8 @@ input[type="button"]:disabled,
 				color: #ebeef4;
                 font-style: italic;
                 margin: 1em 0 0 0;
+                background-color: #25ADB8;
+
 }
 
 #header > footer {
@@ -2950,6 +2954,7 @@ input[type="button"]:disabled,
                 #header > header .avatar {
                     margin: 0 auto 1.6875em auto;
                     width: 6em;
+                    
                 }
                 
                 #header > header h1 {
