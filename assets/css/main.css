@@ -2493,7 +2493,7 @@ input[type="button"]:disabled,
 
 #header > header {
     padding: 3em;
-    background-color: #25ADB8;
+    background-color: #25ADB8; 
 }
 
 #header > header .avatar {
