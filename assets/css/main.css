@@ -2517,7 +2517,6 @@
 			position: absolute;
 			width: 100%;
             background-color: #25ADB8;
-            z-index: -1000000;
 		}
 
 			#header > footer .icons {
