@@ -1,0 +1,2 @@
+User-agent: *
+Disallow: /images/Phalen_Curriculum_Vitae_January_2016.pdf
