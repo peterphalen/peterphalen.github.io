@@ -2855,7 +2855,7 @@ input[type="button"]:disabled,
                 }
                 
                 #titleBar .toggle:before {
-                    background: #444444;
+                    background: #222222;
                     color: #ffffff;
                     content: '\f0c9';
                     display: block;
