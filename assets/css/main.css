@@ -1701,10 +1701,9 @@ section.special, article.special {
 
 header p {
     color: #aaa;
-    background-color: 
-#87bbc1;
+    background-color: #87bbc1;
     position: relative;
-    margin: 0 0 1.6875em 0;
+    margin: 0 0 0.6875em 0;
 }
 
 header h2 + p {
@@ -2120,8 +2119,7 @@ ul.icons {
     padding-left: 0;
     margin-bottom: 0; !important
     padding-bottom: 0; !important
-    background: 
-#87bbc1;
+    background: #87bbc1;
     
 }
 
