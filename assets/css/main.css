@@ -3066,13 +3066,11 @@ input[type="button"]:disabled,
         margin: 0 0 2.25em 0;
     }
     
-    
-    
-    
-    
-    p br {
-        display: static;
+    p {
+        position: static;
     }
+    
+
     
 				ul.actions li {
                     display: block;
