@@ -2118,7 +2118,7 @@ ul.icons {
     cursor: default;
     list-style: none;
     padding-left: 0;
-    padding-bottom: 0;
+    padding-bottom: 0; !important
     background: 
 #87bbc1;
     
