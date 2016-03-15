@@ -3066,6 +3066,14 @@ input[type="button"]:disabled,
         margin: 0 0 2.25em 0;
     }
     
+    
+    
+    
+    
+    p br {
+        display: static;
+    }
+    
 				ul.actions li {
                     display: block;
                     padding: 1.125em 0 0 0;
