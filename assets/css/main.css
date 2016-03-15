@@ -2936,9 +2936,6 @@ input[type="button"]:disabled,
     
     /* Section/Article */
     
-    header br {
-        display: none;
-    }
     
     header.major h2 {
         font-size: 2.5em;
@@ -3066,9 +3063,6 @@ input[type="button"]:disabled,
         margin: 0 0 2.25em 0;
     }
     
-    p {
-        position: static;
-    }
     
 
     
