@@ -2118,6 +2118,7 @@ ul.icons {
     cursor: default;
     list-style: none;
     padding-left: 0;
+    margin-bottom: 0; !important
     padding-bottom: 0; !important
     background: 
 #87bbc1;
