@@ -2538,6 +2538,8 @@ input[type="button"]:disabled,
 
 #header > header p .smaller {
     font-size: 0.4em; !important
+    margin: -0.5em 0 0 0; !important
+
 }
 
 #header > footer {
