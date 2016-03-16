@@ -2536,7 +2536,7 @@ input[type="button"]:disabled,
 }
 
 #header > header p .smallerMargins {
-    margin: 0 0 4.5em 0; !important
+    margin: 0.3 0 4.5em 0; !important
     padding-top: 0; !important
 
 }
@@ -2544,7 +2544,7 @@ input[type="button"]:disabled,
     font-size: 50%;
 }
 #header > header p .bottomIconMargins {
-    margin: 0.5em 0 10em 0; !important
+    margin: 0.5em 0 15em 0; !important
 }
 
 #header > footer {
