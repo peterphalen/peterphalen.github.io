@@ -2536,9 +2536,12 @@ input[type="button"]:disabled,
 
 }
 
-#header > header p .smaller {
+#header > header p .smallerMargins {
     margin: 0.2em 0 0 0; !important
 
+}
+#header > header p .smallerFont {
+    font-size: 75%;
 }
 
 #header > footer {
