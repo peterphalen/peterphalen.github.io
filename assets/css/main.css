@@ -2543,6 +2543,9 @@ input[type="button"]:disabled,
 #header > header p .smallerFont {
     font-size: 50%;
 }
+#header > header p .bottomIconMargins {
+    margin: 0.3em 0 4.5em 0; !important
+}
 
 #header > footer {
     bottom: 0;
