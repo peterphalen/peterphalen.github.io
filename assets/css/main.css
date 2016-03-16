@@ -2537,6 +2537,7 @@ input[type="button"]:disabled,
 
 #header > header p .smallerMargins {
     margin: 0 0 1.75em 0; !important
+    padding-top: 0; !important
 
 }
 #header > header p .smallerFont {
@@ -2988,10 +2989,6 @@ input[type="button"]:disabled,
                 
                 #header > header h1 {
                     font-size: 1.5em;
-                }
-                
-                #header > header p .smallerMargins {
-                    margin: 0.3em 0 0 0; !important
                 }
                 
                 #header > header p {
