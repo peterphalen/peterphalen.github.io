@@ -2541,7 +2541,7 @@ input[type="button"]:disabled,
 
 }
 #header > header p .smallerFont {
-    font-size: 75%;
+    font-size: 50%;
 }
 
 #header > footer {
