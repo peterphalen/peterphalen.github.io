@@ -2537,8 +2537,7 @@ input[type="button"]:disabled,
 }
 
 #header > header p .smaller {
-    font-size: 0.2em; !important
-    margin: -1em 0 0 0; !important
+    margin: 0.2em 0 0 0; !important
 
 }
 
