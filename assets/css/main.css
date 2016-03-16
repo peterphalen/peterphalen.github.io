@@ -2530,10 +2530,14 @@ input[type="button"]:disabled,
 
 #header > header p {
 				color: #ebeef4;
-                margin: 1em 0 0 0;
+                margin: 0 0 0 0;
                 background-color: 
 #87bbc1;
 
+}
+
+#header > header p .smaller {
+    font-size: 0.75em; !important
 }
 
 #header > footer {
