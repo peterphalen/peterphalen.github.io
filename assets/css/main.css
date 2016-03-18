@@ -2632,6 +2632,11 @@ input[type="button"]:disabled,
                 font-style: italic; !important
 }
 
+
+#contact > p {
+    margin: 0; !important
+}
+
 /* One */
 
 #one:before {
