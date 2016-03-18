@@ -2624,6 +2624,14 @@ input[type="button"]:disabled,
     border-top: 0;
 }
 
+/* Contact */
+
+
+#contact > h4 {
+                margin: 0;
+                font-style: italic;
+}
+
 /* One */
 
 #one:before {
