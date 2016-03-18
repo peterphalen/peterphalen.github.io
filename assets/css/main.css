@@ -2635,6 +2635,7 @@ input[type="button"]:disabled,
 
 #contact > p {
     margin: 0; !important
+    padding: 0; !important
 }
 
 /* One */
