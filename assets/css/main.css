@@ -2624,18 +2624,6 @@ input[type="button"]:disabled,
     border-top: 0;
 }
 
-/* Contact */
-
-
-#contact > h4 {
-                margin: 0 0 0 0; !important
-                font-style: italic; !important
-}
-
-
-#contact > p {
-    margin: 0 0 0 0; !important
-}
 
 /* One */
 
