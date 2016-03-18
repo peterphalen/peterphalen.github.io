@@ -2628,8 +2628,8 @@ input[type="button"]:disabled,
 
 
 #contact > h4 {
-                margin: 0;
-                font-style: italic;
+                margin: 0; !important
+                font-style: italic; !important
 }
 
 /* One */
