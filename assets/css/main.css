@@ -1763,43 +1763,6 @@ input::-moz-focus-inner {
     padding: 0;
 }
 
-input[type="text"],
-input[type="password"],
-input[type="email"],
-select,
-textarea {
-    -moz-appearance: none;
-    -webkit-appearance: none;
-    -ms-appearance: none;
-    appearance: none;
-    border-radius: 5px;
-    border: none;
-    border: solid 2px #e4e4e4;
-    color: inherit;
-    display: block;
-    outline: 0;
-    padding: 0 1em;
-    text-decoration: none;
-    width: 100%;
-}
-
-input[type="text"]:invalid,
-input[type="password"]:invalid,
-input[type="email"]:invalid,
-select:invalid,
-textarea:invalid {
-    box-shadow: none;
-}
-
-input[type="text"]:focus,
-input[type="password"]:focus,
-input[type="email"]:focus,
-select:focus,
-textarea:focus {
-    border-color:
-    #a9b8bc;
-}
-
 .select-wrapper {
     text-decoration: none;
     display: block;
@@ -1833,12 +1796,6 @@ textarea:focus {
     display: none;
 }
 
-input[type="text"],
-input[type="password"],
-input[type="email"],
-select {
-    height: 2.75em;
-}
 
 textarea {
     padding: 0.75em 1em;
