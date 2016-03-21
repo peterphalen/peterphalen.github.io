@@ -1706,7 +1706,7 @@ section.special, article.special {
 header p {
     color: #aaa;
     background-color:
-    #a9b8bc;
+    #92b0b7;
     position: relative;
     margin: 0 0 1.6875em 0;
 }
@@ -1733,7 +1733,7 @@ header h6 + p {
 
 header.major h2 {
     color:
-    #a9b8bc;
+    #92b0b7;
     font-size: 3.5em;
 }
 
@@ -1865,7 +1865,7 @@ input[type="radio"]:checked + label:before {
 input[type="checkbox"]:focus + label:before,
 input[type="radio"]:focus + label:before {
     border-color:
-    #a9b8bc;
+    #92b0b7;
 }
 
 input[type="checkbox"] + label:before {
@@ -1989,7 +1989,7 @@ input[type="radio"] + label:before {
     border-radius: 100%;
     overflow: hidden;
     background:
-    #a9b8bc;
+    #92b0b7;
     
 }
 
@@ -2062,7 +2062,7 @@ ul.feature-icons li:before {
 
 ul.feature-icons li:before {
     background:
-    #a9b8bc;
+    #92b0b7;
     border-radius: 100%;
     color: #ffffff;
     display: block;
@@ -2080,7 +2080,7 @@ ul.icons {
     list-style: none;
     padding-left: 0;
     background:
-    #a9b8bc;
+    #92b0b7;
     
 }
 
@@ -2358,7 +2358,7 @@ input[type="reset"].special,
 input[type="button"].special,
 .button.special {
     background-color:
-    #a9b8bc;
+    #92b0b7;
     color: #ffffff !important;
 }
 
@@ -2433,7 +2433,7 @@ input[type="button"]:disabled,
 
 #header {
     background:
-    #a9b8bc;
+    #92b0b7;
     color: #ebeef4;
     height: 100%;
     position: fixed;
@@ -2454,7 +2454,7 @@ input[type="button"]:disabled,
 #header header p {
     color: #e4e4e4;
     background-color:
-    #a9b8bc;
+    #92b0b7;
     
 }
 
@@ -2469,7 +2469,7 @@ input[type="button"]:disabled,
 #header > header {
     padding: 3em;
     background-color:
-    #a9b8bc;
+    #92b0b7;
 }
 
 #header > header .avatar {
@@ -2477,7 +2477,7 @@ input[type="button"]:disabled,
                 margin: 0 auto 2.25em auto;
                 width: 8em;
                 background-color:
-                #a9b8bc;
+                #92b0b7;
                 
 }
 
@@ -2485,7 +2485,7 @@ input[type="button"]:disabled,
 				font-size: 1.75em;
                 margin: 0;
                 background-color:
-                #a9b8bc;
+                #92b0b7;
                 
 }
 
@@ -2493,7 +2493,7 @@ input[type="button"]:disabled,
 				color: #ebeef4;
                 margin: 1em 0 0 0;
                 background-color:
-                #a9b8bc;
+                #92b0b7;
                 
 }
 
@@ -2504,7 +2504,7 @@ input[type="button"]:disabled,
     position: absolute;
     width: 100%;
     background-color:
-    #a9b8bc;
+    #92b0b7;
     z-index: -1000000;
 }
 
@@ -2524,7 +2524,7 @@ input[type="button"]:disabled,
     margin: 0;
     padding: 0;
     background-color:
-    #a9b8bc;
+    #92b0b7;
     
 }
 
@@ -2553,7 +2553,7 @@ input[type="button"]:disabled,
 #header > nav ul li a.active {
     background: #fff;
     color:
-    #a9b8bc !important;
+    #92b0b7 !important;
 }
 
 #header > nav ul li:first-child {
