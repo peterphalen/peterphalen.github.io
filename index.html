@@ -82,8 +82,8 @@
 <section id="header">
 				<header>
                     <span class="image avatar"><img src="images/Peter-L-Phalen.jpg" alt="Peter L Phalen, doctoral student" /></span>
-                    <span itemprop="name"><h1 id="logo"><a href="#">Peter Phalen</a></h1></span>
-                    <p>indianapolis, in | seattle, wa</p>
+                    <h1 id="logo"><a href="#"><span itemref="birthPlace UIndy worksfor" itemprop="name" itemscope itemtype="http://schema.org/Person">Peter Phalen</span></a></h1>
+                    <p>indianapolis, in | <span id="birthPlace" itemprop="birthPlace" itemscope itemtype="http://schema.org/Person">seattle, wa</span></p>
                     <p>
                     <ul class="icons" >
                         <li><a href="https://twitter.com/PeterPhalen" class="icon fa fa-twitter" alt="Peter Phalen twitter profile"><span class="label">Peter Phalen's Twitter Account</span></a></li>
@@ -195,7 +195,7 @@
 <section id="contact">
     <div class="container">
         <h3>Contact Me</h3>
-        <p>peter.phalen@gmail.com<br><br><b><span itemprop="title">Doctoral student</span></b><br><i><span itemprop="affiliation">University of Indianapolis</span></i><br><b><span itemprop="title">Statistical programmer - Mobile app developer - RA</span></b><br><i><span itemprop="worksFor" content="Indianapolis VA Medical Center and Indiana University">Indianapolis VA Medical Center<br>Indiana University</span></i></p>
+        <p>peter.phalen@gmail.com<br><br><b><span id="docStudent" itemprop="jobTitle" itemscope itemtype="http://schema.org/Person">Doctoral student</span></b><br><i><span id="UIndy" itemref="docStudent" itemprop="affiliation" itemscope itemtype="http://schema.org/Person">University of Indianapolis</span></i><br><b><span id="computers" itemprop="jobTitle" itemscope itemtype="http://schema.org/Person">Statistical programmer - Mobile app developer - RA</span></b><br><i><span id="worksfor" itemprop="worksFor" itemref="computers" content="Indianapolis VA Medical Center and Indiana University" itemscope itemtype="http://schema.org/Person">Indianapolis VA Medical Center<br>Indiana University</span></i></p>
         
     </div>
 </section>
