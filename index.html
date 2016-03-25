@@ -79,7 +79,7 @@
 <section id="header">
 				<header>
                     <span class="image avatar"><img src="images/Peter-L-Phalen.jpg" alt="Peter L Phalen, doctoral student" /></span>
-                    <h1 id="logo"><a href="#"><span itemref="birthplace docStudent email programmer mobile residence RA VAMC IU UIndy" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Peter Phalen</span></span></a></h1>
+                    <h1 id="logo"><a href="#"><span id="me" itemref="birthplace docStudent email programmer mobile residence RA VAMC IU UIndy" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Peter Phalen</span></span></a></h1>
                     <p><span id="residence" itemprop="homeLocation">indianapolis, in</span> | <span id="birthplace" itemprop="birthPlace">seattle, wa</span></p>
                     <p>
                     <ul class="icons" >
@@ -121,8 +121,11 @@
 									<div class="features">
                                         
 
-                                        <article>
-                                            <a href="https://chrome.google.com/webstore/detail/humanize/ckgiiaehnngpfmcnjmlmpedkkfnedmil?hl=en&gl=US" class="image" alt="Humanize Google Chrome Download Peter Phalen"><img src="images/humanize_icon.png" alt="humanize chrome extension" /></a>
+                                        <article id="humanize" itemprop="creator" itemref="me" itemscope itemtype="http://schema.org/CreativeWork">
+                                            <a itemprop="url" href="https://chrome.google.com/webstore/detail/humanize/ckgiiaehnngpfmcnjmlmpedkkfnedmil?hl=en&gl=US" class="image" alt="Humanize Google Chrome Download Peter Phalen"><img src="images/humanize_icon.png" alt="humanize chrome extension" /></a>
+                                            <meta itemprop="creator" content="Peter Phalen" />
+                                            <meta itemprop="name" content="humanize" />
+
                                             <div class="inner">
                                                 <h4>Chrome Extension</h4>
                                                 <p>Replaces some words that are predictably used to dehumanize people with different words that are more humanizing. Open <a href="https://github.com/peterphalen/humanize/blob/master/README.md" alt="Description of Humanize Chrome extension" style="color: #666666">source</a>.</p>
