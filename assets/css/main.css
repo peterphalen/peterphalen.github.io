@@ -1704,8 +1704,7 @@ section.special, article.special {
 
 header p {
     color: #aaa;
-    background-color:
-    #92b0b7;
+    background-color:#92b0b7;
     position: relative;
     margin: 0 0 1.6875em 0;
 }
@@ -1731,8 +1730,7 @@ header h6 + p {
 }
 
 header.major h2 {
-    color:
-    #92b0b7;
+    color:#92b0b7;
     font-size: 3.5em;
 }
 
@@ -2427,8 +2425,7 @@ input[type="button"]:disabled,
 /* Header */
 
 #header {
-    background:
-    #92b0b7;
+    background:#92b0b7;
     color: #ebeef4;
     height: 100%;
     position: fixed;
@@ -2448,8 +2445,7 @@ input[type="button"]:disabled,
 
 #header header p {
     color: #e4e4e4;
-    background-color:
-    #92b0b7;
+    background-color:#92b0b7;
     
 }
 
@@ -2487,8 +2483,7 @@ input[type="button"]:disabled,
 #header > header p {
 				color: #ebeef4;
                 margin: 1em 0 0 0;
-                background-color:
-                #92b0b7;
+                background-color:#92b0b7;
                 
 }
 
@@ -2498,8 +2493,7 @@ input[type="button"]:disabled,
     padding: 2em;
     position: absolute;
     width: 100%;
-    background-color:
-    #92b0b7;
+    background-color:#92b0b7;
     z-index: -1000000;
 }
 
@@ -2518,13 +2512,12 @@ input[type="button"]:disabled,
     list-style: none;
     margin: 0;
     padding: 0;
-    background-color:
-    #92b0b7;
+    background-color:#92b0b7;
     
 }
 
 #header > nav ul li {
-				border-top: solid 2px #6fb8be;
+				border-top: solid 2px #aabdc1;
                 display: block;
                 padding: 0;
 }
@@ -2543,8 +2536,7 @@ input[type="button"]:disabled,
 
 #header > nav ul li a.active {
     background: #fff;
-    color:
-    #92b0b7 !important;
+    color:#92b0b7 !important;
 }
 
 #header > nav ul li:first-child {
