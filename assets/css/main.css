@@ -2365,18 +2365,14 @@ input[type="submit"].special:hover,
 input[type="reset"].special:hover,
 input[type="button"].special:hover,
 .button.special:hover {
-				background-color: 666666
-                6fb8be
-                6fb8be
-                6fb8be
-                6fb8be;
+				background-color: #6fb8be;
 }
 
 input[type="submit"].special:active,
 input[type="reset"].special:active,
 input[type="button"].special:active,
 .button.special:active {
-				background-color: 666666;
+				background-color: #6fb8be;
 }
 
 input[type="submit"].disabled, input[type="submit"]:disabled,
@@ -2528,11 +2524,7 @@ input[type="button"]:disabled,
 }
 
 #header > nav ul li {
-				border-top: solid 2px 666666
-                6fb8be
-                6fb8be
-                6fb8be
-                6fb8be;
+				border-top: solid 2px #6fb8be;
                 display: block;
                 padding: 0;
 }
