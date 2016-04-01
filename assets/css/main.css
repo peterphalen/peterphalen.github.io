@@ -2512,12 +2512,11 @@ input[type="button"]:disabled,
     list-style: none;
     margin: 0;
     padding: 0;
-    background-color:#92b0b7;
     
 }
 
 #header > nav ul li {
-				border-top: solid 2px #a9b8bc;
+				border-top: solid 2px #9eb9bf;
                 display: block;
                 padding: 0;
 }
