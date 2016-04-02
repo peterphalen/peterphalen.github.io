@@ -2423,7 +2423,7 @@ table.alt tfoot {
 
 /* One */
 
-#one:before {
+#coding:before {
     background-image: url("../../images/pacific-coast.jpg");
     background-position: top right;
     background-repeat: no-repeat;
@@ -2608,7 +2608,7 @@ table.alt tfoot {
                 
                 /* One */
                 
-                #one:before {
+                #coding:before {
                     height: 10em;
                 }
                 
@@ -2803,7 +2803,7 @@ table.alt tfoot {
                 
                 /* One */
                 
-                #one:before {
+                #coding:before {
                     height: 7em;
                 }
                 
