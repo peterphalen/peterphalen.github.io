@@ -51,6 +51,26 @@ body {
     -webkit-text-size-adjust: none;
 }
 
+.fade {
+    -webkit-animation-name:fadeIn;
+    -webkit-animation-duration:.5s;
+    -webkit-animation-timing-function:ease-in;
+    -webkit-animation-iteration-count:1;
+}
+
+/* Fade in */
+@-webkit-keyframes fadeIn {
+    0%   {
+        opacity:0;
+    }
+    50%   {
+        opacity:0;
+    }
+    100%   {
+        opacity:1;
+    }
+}
+
 /* Box Model */
 
 *, *:before, *:after {
