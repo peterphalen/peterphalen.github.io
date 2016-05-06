@@ -47,7 +47,7 @@ body {
     -webkit-animation-name:fadeIn;
     -webkit-animation-duration:.9s;
     -webkit-animation-timing-function:ease-in;
-    -webkit-animation-iteration-count:333;
+    -webkit-animation-iteration-count:1;
 }
 
 /* Fade in */
