@@ -45,27 +45,17 @@ body {
 
 .fade {
     -webkit-animation-name:fadeIn;
-    -webkit-animation-duration:.9s;
+    -webkit-animation-duration:.95s;
     -webkit-animation-timing-function:ease-in;
     -webkit-animation-iteration-count:1;
 }
 
 /* Fade in */
-@-webkit-keyframes fadeIn {
-    0%   {
-        opacity:0;
-    }
-    50%   {
-        opacity:0;
-    }
-    100%   {
-        opacity:1;
-    }
-}
+@-webkit-keyframes fadeIn { 0%{opacity:0;} 50%{opacity:0;} 100%{opacity:1;} }
 
 /* Box Model */
 
-*, *:before, *:after {
+*, *:before, *:after {q
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
