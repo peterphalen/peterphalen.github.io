@@ -2611,7 +2611,7 @@ table.alt tfoot {
                 
                 /* One */
                 
-                #coding:before {
+                #wrapper:before {
                     height: 10em;
                 }
                 
@@ -2804,9 +2804,9 @@ table.alt tfoot {
                     padding: 2em 0 0 0;
                 }
                 
-                /* One */
+                /* Wrapper */
                 
-                #coding:before {
+                #wrapper:before {
                     height: 7em;
                 }
                 
