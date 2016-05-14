@@ -2431,7 +2431,6 @@ table.alt tfoot {
     background-repeat: no-repeat;
     background-size: cover;
     content: '';
-    opacity: 1 !important;
     display: block;
     height: 15em;
     width: 100%;
