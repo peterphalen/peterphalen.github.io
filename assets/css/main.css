@@ -45,18 +45,16 @@ body {
 
 .fade {
     -webkit-animation-name:fadeIn;
-    -webkit-animation-duration:.8s;
-    -webkit-animation-timing-function:ease-in;
+    -webkit-animation-duration:.9s;
+    -webkit-animation-timing-function:ease;
     -webkit-animation-iteration-count:1;
 }
 
 /* Fade in */
 @-webkit-keyframes fadeIn {
-    0%{opacity:0;transform: translateY(8px);}
-    60%{opacity:.8;}
-    100%{opacity:1;
-        transform: translateY(0px);
-        }
+    0%{opacity:0;transform: translateY(1em);}
+    50%{opacity:0;}
+    100%{opacity:1;}
 }
 
 /* Box Model */
