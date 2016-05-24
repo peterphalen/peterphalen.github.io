@@ -9,10 +9,21 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
     vertical-align: baseline;
 }
 
-.cvlinks a, a:hover, a:visited {
-    color="#3366CC !important;"
+#reflist a:link {
+    border-bottom: solid 1px #008080;
+    
+    color: #009a9a !important;
 }
 
+#reflist  a:hover {
+    border-bottom-color: transparent;
+    
+    color: #00cdcd !important;
+}
+
+#reflist  a:visited {
+    color: #006767 !important;
+}
 
 article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
     display: block;
@@ -23,8 +34,8 @@ body {
 }
 
 h1 br, h2 br, h3 br, h4 br, h5 br, h6 br {
-        display: none;
- }
+    display: none;
+}
 
 ol, ul {
     list-style: none;
@@ -2372,7 +2383,7 @@ table.alt tfoot {
 
 #header > nav ul {
     background-color:#86a7af;
-
+    
     
 }
 
