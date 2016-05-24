@@ -1588,6 +1588,7 @@ a:hover {
     color: #3d3d3d !important;
 }
 
+
 #reflist a:link {
     border-bottom: solid 1px #00aa9a;
     color: #92afb7 !important;
@@ -1595,7 +1596,7 @@ a:hover {
 
 
 #reflist  a:visited {
-    color: #009688 !important;
+    color: #748c92 !important;
 }
 
 
