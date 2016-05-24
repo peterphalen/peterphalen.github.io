@@ -1583,6 +1583,10 @@ a {
     text-decoration: none;
 }
 
+a:hover {
+    border-bottom-color: transparent;
+    color: #3d3d3d !important;
+}
 
 #reflist a:link {
     border-bottom: solid 1px #00aa9a;
@@ -1590,15 +1594,19 @@ a {
     color: #14c3bc !important;
 }
 
+
 #reflist  a:visited {
     color: #007167 !important;
 }
 
+
 #reflist  a:hover {
     border-bottom-color: transparent;
-    
     color: #5ad5d0 !important;
 }
+
+
+
 
 strong, b {
     color: #777;
@@ -2325,7 +2333,7 @@ table.alt tfoot {
 }
 
 #header a:hover {
-	color: #ffffff !important;
+				color: #ffffff !important;
 }
 
 #header > header {
