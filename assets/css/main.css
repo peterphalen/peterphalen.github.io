@@ -1597,8 +1597,7 @@ a:hover {
 }
 
 #reflist p {
-    margin-right: 0.5em !important;
-    
+    margin: 0 0.5 1.5em 0 !important;
 }
 
 
