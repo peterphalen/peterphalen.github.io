@@ -1590,13 +1590,12 @@ a:hover {
 
 #reflist a:link {
     border-bottom: solid 1px #00aa9a;
-    
     color: #14c3bc !important;
 }
 
 
 #reflist  a:visited {
-    color: #007167 !important;
+    color: #0e8883 !important;
 }
 
 
