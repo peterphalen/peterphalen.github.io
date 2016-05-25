@@ -1592,16 +1592,17 @@ a:hover {
 #reftitle * {
     line-height: "1" !important;
     margin-top: 1em !important;
+    margin-bottom: 1em !important;
 }
 
 
 #reflist * {
     font-family: "Times New Roman", Times, serif !important;
-    line-height: "1.25" !important;
+    line-height: "1.1" !important;
 }
 
 #reflist ul {
-    margin: 0 2em 0 1em !important;
+    margin: 0 3em 0 1em !important;
 }
 
 #reflist li {
