@@ -1592,14 +1592,16 @@ a:hover {
 
 
 #reflist * {
-    
     font-family: "Times New Roman", Times, serif !important;
 }
 
-#reflist p {
-    margin: 0 0.5em 1.5em 0 !important;
+#reflist ul {
+    margin: 0 2em 0 1em !important;
 }
 
+#reflist li {
+    margin-bottom: 1.25em !important;
+}
 
 #reflist a:link {
     border-bottom: solid 1px #00aa9a;
@@ -1616,7 +1618,6 @@ a:hover {
     border-bottom-color: transparent;
     color: #5ad5d0 !important;
 }
-
 
 
 
