@@ -1589,10 +1589,15 @@ a:hover {
     color: #3d3d3d !important;
 }
 
+#reftitle * {
+    line-height: "1" !important;
+    margin-top: 1em !important;
+}
 
 
 #reflist * {
     font-family: "Times New Roman", Times, serif !important;
+    line-height: "1.25" !important;
 }
 
 #reflist ul {
