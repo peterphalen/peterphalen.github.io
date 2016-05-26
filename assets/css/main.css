@@ -2914,6 +2914,8 @@ table.alt tfoot {
         margin: 0 0 2.25em 0;
     }
     
+
+    
 				ul.actions li {
                     display: block;
                     padding: 1.125em 0 0 0;
@@ -2937,6 +2939,7 @@ table.alt tfoot {
                 ul.actions.small li {
                     padding: 0.5625em 0 0 0;
                 }
+
                 
                 ul.actions.small li:first-child {
                     padding-top: 0;
@@ -2946,6 +2949,13 @@ table.alt tfoot {
                     display: block;
                     width: 100%;
                 }
+                
+                
+                #reflist ul.actions li {
+                    margin-left: 0.5em !important;
+                }
+                
+                
                 
                 
 }
