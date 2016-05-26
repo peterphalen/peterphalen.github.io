@@ -2554,7 +2554,7 @@ table.alt tfoot {
                 
                 /* Reflist */
                 
-                #reflist ul * {
+                #reflist ul {
                     margin-left: 1em;
                 }
                 
