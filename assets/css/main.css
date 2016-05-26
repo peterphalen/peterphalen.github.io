@@ -2951,7 +2951,7 @@ table.alt tfoot {
                 }
                 
                 
-                #reflist ul.actions li {
+                #reflist ul.actions * {
                     margin-left: 0.5em !important;
                 }
                 
