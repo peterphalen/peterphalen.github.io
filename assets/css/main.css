@@ -2552,6 +2552,13 @@ table.alt tfoot {
                     padding: 4em 0 2em 0;
                 }
                 
+                /* Reflist */
+                
+                #reflist ul * {
+                    margin-left: 1em;
+                }
+                
+                
 }
 
 /* Large */
