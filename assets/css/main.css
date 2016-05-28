@@ -1598,15 +1598,12 @@ a:hover {
 
 #reflist * {
     font-family: "Times New Roman", Times, serif !important;
-    line-height: 1.1 !important;
 }
 
-#reflist ul {
-    margin: 0 3em 0 1em !important;
-}
+
 
 #reflist li {
-    margin-bottom: 1em !important;
+    margin: 0 3em 1.3em 1em !important;
 }
 
 #reflist a:link {
