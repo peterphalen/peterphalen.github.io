@@ -1590,7 +1590,6 @@ a:hover {
 }
 
 #reftitle * {
-    line-height: "1" !important;
     margin-bottom: 1em !important;
 }
 
@@ -1598,8 +1597,6 @@ a:hover {
 #reflist * {
     font-family: "Times New Roman", Times, serif !important;
 }
-
-
 
 #reflist li {
     margin: 0 3em 1.5em 1em !important;
@@ -2548,11 +2545,7 @@ table.alt tfoot {
                     padding: 4em 0 2em 0;
                 }
                 
-                /* Reflist */
-                
-                #reflist ul {
-                    margin-left: 1em;
-                }
+
                 
                 
 }
@@ -2953,10 +2946,7 @@ table.alt tfoot {
                     width: 100%;
                 }
                 
-                
-                #reflist ul.actions * {
-                    margin-left: 0.5em !important;
-                }
+
                 
                 
                 
