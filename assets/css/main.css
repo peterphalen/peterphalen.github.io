@@ -1604,18 +1604,18 @@ a:hover {
 
 #reflist a:link {
     border-bottom: solid 1px #00aa9a;
-    color: #28c9c5 !important;
+    color: #0039FF !important;
 }
 
 
 #reflist  a:visited {
-    color: #ad8c99 !important;
+    color: #894375 !important;
 }
 
 
 #reflist  a:hover {
     border-bottom-color: transparent;
-    color: #5ad5d0 !important;
+    color: #5089FF !important;
 }
 
 
