@@ -1603,19 +1603,19 @@ a:hover {
 }
 
 #reflist a:link {
-    border-bottom: solid 1px #00aa9a;
-    color: #0039FF !important;
+    border-bottom: solid 1px #ccccfb;
+    color: #0000EE !important;
 }
 
 
 #reflist  a:visited {
-    color: #4E14CC !important;
+    color: #551A8B !important;
 }
 
 
 #reflist  a:hover {
     border-bottom-color: transparent;
-    color: #0033E5 !important;
+    color: #0000be !important;
 }
 
 
