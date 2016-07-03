@@ -1607,6 +1607,11 @@ a:hover {
     color: #0000EE !important;
 }
 
+#reflistSup a:hover {
+    border-bottom-color: transparent;
+    color: #000000 !important;
+}
+
 
 #reflist  a:visited {
     color: #551A8B !important;
