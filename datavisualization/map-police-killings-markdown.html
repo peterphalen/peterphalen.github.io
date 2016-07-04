@@ -80,7 +80,7 @@ require(jsonlite)
 require(curl)
 require(leaflet)</code></pre>
       
-            <br/><p>Pull data from json file embedded in the Guardian’s The Counted website: <a href="http://www.theguardian.com/thecounted">http://www.theguardian.com/thecounted</a> Download needed packages you don’t have</p>
+            <br/><p>Pull data from json file embedded in the Guardian’s The Counted website: <a href="http://www.theguardian.com/thecounted">http://www.theguardian.com/thecounted</a></p>
             <pre class="r"><code>thecounted &lt;- fromJSON(&quot;https://interactive.guim.co.uk/2015/the-counted/v/1455138961531/files/skeleton.json&quot;)
 thecounted &lt;- subset(thecounted, name != &quot;Unknown&quot;) #drop people not yet identified</code></pre>
             <br/><p>Color-code for whether the victim was armed</p>
