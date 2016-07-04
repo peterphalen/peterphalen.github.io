@@ -82,7 +82,8 @@ require(curl)
 require(leaflet)</code></pre>
 <br/>
 <p>Pull data from json file embedded in the Guardian’s The Counted website.</p>
-<pre class="r"><code>thecounted &lt;- fromJSON(&quot;https://interactive.guim.co.uk/2015/the-counted/v/1455138961531/files/skeleton.json&quot;)</code></pre>
+<pre class="r"><code>thecounted &lt;- fromJSON(&quot;https://interactive.guim.co.uk/2015/the-counted/v/1455138961531/files/skeleton.json&quot;)
+thecounted <- subset(thecounted, name != "Unknown") #drop deaths with unknown names</code></pre>
 <br/>
 <p>Use the leaflet htmlwidget to create an interactive online visualization of data. This is all one function but steps are annotated.</p>
 <pre class="r"><code>leaflet(data = thecounted) %&gt;%   #data from the counted
