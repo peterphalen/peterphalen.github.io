@@ -18,14 +18,26 @@
   <priority>0.10</priority>
 </url>
 <url>
-    <loc>https://www.peterphalen.com/publications</loc>
+    <loc>https://www.peterphalen.com/publications/</loc>
     <lastmod>2016-07-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.05</priority>
 </url>
 <url>
+    <loc>https://www.peterphalen.com/datavisualization/</loc>
+    <lastmod>2016-08-17</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.00</priority>
+</url>
+<url>
     <loc>https://www.peterphalen.com/datavisualization/map-police-killings.html</loc>
-    <lastmod>2016-08-16</lastmod>
+    <lastmod>2016-08-17</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.00</priority>
+</url>
+<url>
+    <loc>https://www.peterphalen.com/datavisualization/poverty-police-killings.html</loc>
+    <lastmod>2016-08-17</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.00</priority>
 </url>
