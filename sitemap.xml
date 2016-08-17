@@ -26,19 +26,19 @@
 <url>
     <loc>https://www.peterphalen.com/datavisualization/</loc>
     <lastmod>2016-08-17</lastmod>
-    <changefreq>daily</changefreq>
+    <changefreq>monthly</changefreq>
     <priority>1.00</priority>
 </url>
 <url>
     <loc>https://www.peterphalen.com/datavisualization/map-police-killings.html</loc>
     <lastmod>2016-08-17</lastmod>
-    <changefreq>daily</changefreq>
+    <changefreq>weekly</changefreq>
     <priority>1.00</priority>
 </url>
 <url>
     <loc>https://www.peterphalen.com/datavisualization/poverty-police-killings.html</loc>
     <lastmod>2016-08-17</lastmod>
-    <changefreq>daily</changefreq>
+    <changefreq>weekly</changefreq>
     <priority>1.00</priority>
 </url>
 </urlset>
