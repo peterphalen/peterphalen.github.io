@@ -47,14 +47,14 @@ body {
 
 .fade {
     -webkit-animation-name:fadeIn;
-    -webkit-animation-duration:.75s;
+    -webkit-animation-duration:.8s;
     -webkit-animation-timing-function:ease;
     -webkit-animation-iteration-count:1;
 }
 
 /* Fade in */
 @-webkit-keyframes fadeIn {
-    0%{opacity:0;transform: translateY(1em);}
+    0%{opacity:0;transform: translateY(.5em);}
     50%{opacity:0.1;}
     100%{opacity:1;}
 }
