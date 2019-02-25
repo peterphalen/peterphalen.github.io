@@ -126,7 +126,7 @@ pal.crime <- colorNumeric(colorRamp(c('#ccccff', 'red')),
 countlabel <- paste0(nbds$Name,"<br/>",nbds$count," shootings among ",nbds$Population," residents")
 nbds$countlabel <- ifelse(nbds$Population == 0, paste0(nbds$Name,":<br/>","No residents"), countlabel)
 
-leaflet(nbds) %>% 
+adjusted.map <- leaflet(nbds) %>% 
   addProviderTiles(providers$CartoDB.PositronNoLabels) %>%
   addPolygons(stroke=T,
               weight=1,
@@ -134,7 +134,11 @@ leaflet(nbds) %>%
               color=~pal.crime(per1k),
               fillOpacity=.6) %>%
   addLegend("bottomright",title="Shootings per one</br>thousand residents</br>(2012-present)",colors=~pal.crime(labs),labels=~labs)
+
+adjusted.map
 ```
+
+## .
 
 ## Raw count map
 
@@ -143,7 +147,7 @@ leaflet(nbds) %>%
 labs <- c(0,50,100,150,200)
 pal.crime <- colorNumeric(colorRamp(c('#ccccff', 'red')), labs)
 
-leaflet(nbds) %>% 
+raw.map <- leaflet(nbds) %>% 
   addProviderTiles(providers$CartoDB.PositronNoLabels) %>%
   addPolygons(stroke=T,
               weight=1,
@@ -151,6 +155,8 @@ leaflet(nbds) %>%
               color=~pal.crime(count),
               fillOpacity=.5) %>%
   addLegend("bottomright",title="# of Shootings (2012-present)",colors=~pal.crime(labs),labels=~labs)
+
+raw.map
 ```
 
 
