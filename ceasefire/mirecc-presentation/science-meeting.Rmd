@@ -106,10 +106,6 @@ get_shooting_count <- function(neighborhood){
 }
 
 nbds$count <- sapply(nbds$Name, get_shooting_count)
-```
-
-
-```{r}
 
 #--------- population-adjusted --------------#
 nbds$per1k <- nbds$count / nbds$Population * 1000
