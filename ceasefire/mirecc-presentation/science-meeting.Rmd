@@ -109,10 +109,7 @@ nbds$count <- sapply(nbds$Name, get_shooting_count)
 ```
 
 
-## Population-adjusted map
-
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
+```{r}
 
 #--------- population-adjusted --------------#
 nbds$per1k <- nbds$count / nbds$Population * 1000
@@ -134,11 +131,17 @@ adjusted.map <- leaflet(nbds) %>%
               color=~pal.crime(per1k),
               fillOpacity=.6) %>%
   addLegend("bottomright",title="Shootings per one</br>thousand residents</br>(2012-present)",colors=~pal.crime(labs),labels=~labs)
+```
 
+## Population-adjusted map
+
+## Population-adjusted map
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 adjusted.map
 ```
 
-## .
+## Raw count map
 
 ## Raw count map
 
