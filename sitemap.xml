@@ -6,31 +6,31 @@
             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 
 <url>
-  <loc>https://www.peterphalen.com/</loc>
+  <loc>https://peterphalen.github.io/</loc>
   <priority>1.00</priority>
 </url>
 <url>
-  <loc>https://www.peterphalen.com/Phalen-Shortened-Curriculum-Vitae-February-2017.pdf</loc>
+  <loc>https://peterphalen.github.io/Phalen-Shortened-Curriculum-Vitae-December-2018.pdf</loc>
   <priority>2.00</priority>
 </url>
 <url>
-    <loc>https://www.peterphalen.com/publications/</loc>
+    <loc>https://peterphalen.github.io/publications/</loc>
     <priority>1.00</priority>
 </url>
 <url>
-    <loc>https://www.peterphalen.com/datavisualization/</loc>
+    <loc>https://peterphalen.github.io/datavisualization/</loc>
     <priority>1.00</priority>
 </url>
 <url>
-    <loc>https://www.peterphalen.com/datavisualization/map-police-killings.html</loc>
+    <loc>https://peterphalen.github.io/datavisualization/map-police-killings.html</loc>
     <priority>1.00</priority>
 </url>
 <url>
-    <loc>https://www.peterphalen.com/datavisualization/poverty-police-killings.html</loc>
+    <loc>https://peterphalen.github.io/datavisualization/poverty-police-killings.html</loc>
     <priority>1.00</priority>
 </url>
 <url>
-    <loc>https://www.peterphalen.com/datavisualization/police-killings-graph-viz.html</loc>
+    <loc>https://peterphalen.github.io/datavisualization/police-killings-graph-viz.html</loc>
     <priority>1.00</priority>
 </url>
 </urlset>
