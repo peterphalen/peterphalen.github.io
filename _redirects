@@ -1,0 +1,5 @@
+# Redirect default Netlify subdomain to primary domain
+https://peterphalen.netlify.com/* https://peterphalen.github.io/:splat 301!
+
+# These extra rules are required because HTTPS is not forced
+http://peterphalen.netlify.com/* https://peterphalen.github.io/:splat 301!
