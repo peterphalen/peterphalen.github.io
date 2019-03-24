@@ -1,7 +1,7 @@
 ---
 title: "Gun Violence in Baltimore (2012-present): where it happens, when it happens, and the impact of Baltimore Ceasefire"
 author: "peter phalen"
-date: "2/24/2019"
+date: "3/23/2019"
 output: ioslides_presentation
 ---
 
@@ -41,9 +41,11 @@ bpd <- readr::read_csv(url)
 names(bpd)
 ```
 
-```{r, echo = FALSE, message=F}
+```{r, echo = FALSE, message=F, warning=FALSE}
 url <- "/Users/peterphalen/Documents/ceasefire/BPD_Part_1_Victim_Based_Crime_Data.csv"
 bpd <- readr::read_csv(url)
+```
+```{r, echo = FALSE, message=F}
 names(bpd)
 ```
 
@@ -201,7 +203,7 @@ Poisson link function (outcome is count and ```mean``` is ~identical to ```sd```
 
 Predictors: spline time trend, cyclical spline for yearly seasonality, and random effect for day of the week
 
-```{r, message=FALSE, warning=FALSE}
+```{r fitting the model, message=FALSE, warning=FALSE}
 library(rstanarm)
 m1 <- stan_gamm4(shootings ~ 
             s(jul) +
