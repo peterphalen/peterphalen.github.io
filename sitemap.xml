@@ -7,27 +7,27 @@
 
 <url>
   <loc>https://peterphalen.github.io/</loc>
-  <priority>1.00</priority>
+  <priority>0.9</priority>
 </url>
 <url>
   <loc>https://peterphalen.github.io/Phalen-Shortened-CV.pdf</loc>
-  <priority>2.00</priority>
+  <priority>1.0</priority>
 </url>
 <url>
     <loc>https://peterphalen.github.io/publications/</loc>
-    <priority>1.00</priority>
+    <priority>1.0</priority>
 </url>
 <url>
     <loc>https://peterphalen.github.io/datavisualization/</loc>
-    <priority>1.00</priority>
+    <priority>0.9</priority>
 </url>
 <url>
     <loc>https://peterphalen.github.io/datavisualization/map-police-killings.html</loc>
-    <priority>1.00</priority>
+    <priority>0.9</priority>
 </url>
 <url>
     <loc>https://peterphalen.github.io/datavisualization/poverty-police-killings.html</loc>
-    <priority>1.00</priority>
+    <priority>0.9</priority>
 </url>
 <url>
     <loc>https://peterphalen.github.io/datavisualization/police-killings-graph-viz.html</loc>
@@ -35,6 +35,6 @@
 </url>
 <url>
     <loc>https://peterphalen.github.io/ceasefire</loc>
-    <priority>1.00</priority>
+    <priority>0.95</priority>
 </url>
 </urlset>
