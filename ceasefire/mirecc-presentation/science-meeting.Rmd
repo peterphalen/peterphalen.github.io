@@ -1,7 +1,7 @@
 ---
 title: "Gun Violence in Baltimore (2012-present): where it happens, when it happens, and the impact of Baltimore Ceasefire"
 author: "peter phalen"
-date: "3/23/2019"
+date: "3/26/2019"
 output: ioslides_presentation
 ---
 
@@ -407,7 +407,7 @@ m2 <- stan_gamm4(shootings ~
            random= ~ (1 | weekday),
            data=daily, 
            cores=4,
-           iter=500, 
+           iter=1000, 
            family=poisson)
 ```
 
