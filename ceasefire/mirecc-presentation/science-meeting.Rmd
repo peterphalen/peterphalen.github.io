@@ -163,8 +163,9 @@ raw.map
 
 ## Geospatial disparities
 
-![](./images/racial-diversity-map.png)
+![](./images/aa-map.png)
 
+(https://bniajfi.org/indicators/Census%20Demographics/paa)
 
 # Modeling shootings in time
 
@@ -435,13 +436,13 @@ daily %>%
 ```
 
 ## Modeling the Ceasefire
-
+```{r, include=FALSE}
+library(bayesplot)
+```
 ```{r, message=FALSE, warning=FALSE}
-plot(m2, regex_pars="ceasefire") + 
-  
+mcmc_intervals(exp(as.array(m2, regex_pars = "ceasefire"))) + 
   scale_y_discrete(labels="ceasefire effect") +
-
-  xlim(c(-1.5,0)) 
+  xlim(c(0,1)) 
 ```
 
 ## Modeling the Ceasefire
