@@ -227,7 +227,7 @@ ISEL-Self-esteem is the strongest predictor of suicidal ideation in our sample--
  
 These are social items but they really zero in on self-esteem. It reads a lot like a measure of depression, albeit through a social lense. It's interesting that the scale predicts suicidality so much better than the CESD. 
 
-Because model coefficients can be hard to interpret, here we create a plot of self-esteem interpersonal support and suicidality, with the model prediction drawn as a line. Remember, this line represents the relationship between self-esteem social support and suicidality after controlling for other variables in the model constant, including depression.
+Because model coefficients can be hard to interpret, here we create a plot of ISEL-Self-esteem and suicidality, with the model prediction drawn as a line. Remember, this line represents the relationship between ISEL-Self-esteem and suicidality after controlling for other variables in the model constant, including depression.
 
 ```{r}
 
@@ -278,7 +278,7 @@ The inverse relationship between ISEL-Belonging and suicidal ideation isn't clas
 
 #### ISEL-Tangible
 
-The ISEL-Tangible subscale is intended to capture "perceived availability of material aid." If anything it predicts *increased* risk of suicidal ideation in our sample, after controlling for the other variables in the model. The Tangible subscale consists of the following 10 items:
+The ISEL-Tangible subscale is intended to capture "perceived availability of material aid." Its zero-order relationship with SI is negative as you would expect, but in the multivariate model it predicts *increased* risk of suicidal ideation after controlling for the other variables. The Tangible subscale consists of the following 10 items:
 
  * If I needed help fixing an appliance or repairing my car, there is someone who would help me.
  * If I needed a ride to the airport very early in the morning, I would have a hard time finding someone to take me. (reverse coded)
@@ -291,7 +291,18 @@ The ISEL-Tangible subscale is intended to capture "perceived availability of mat
  * It would be difficult to find someone who would lend me their car for a few hours. (reverse coded)
  * If I needed some help in moving to a new house or apartment, I would have a hard time finding someone to help me. (reverse coded)
 
-It's hard to understand how items like these could predict increased suicidality even after controlling for other items in the model. (If you remove the other COPE and ISEL variables from the model, ISEL-Tangible predicts decreased suicidality as you would expect.)  
+It's hard to understand how items like these could predict increased suicidality even after controlling for other items in the model. 
+
+If you remove every other COPE and ISEL variable from the model, ISEL-Tangible predicts decreased suicidality as you would expect. Taking out ISEL-Belonging makes the most difference in this respect, which gives us a better way of understanding the negative relationship between ISEL-Tangible and SI in the multivariate model:
+
+```{r}
+ggplot(dat) + 
+  aes(x = ISEL.belonging, y = ISEL.tangible) + 
+  geom_point() + 
+  geom_smooth(method="lm", se=FALSE, col = "black", lty=2) + 
+  ggtitle("people scoring above the dotted line tended to have higher suicidal\nideation than people scoring below the dotted line")
+```
+
 
 #### COPE Emotional Social Support
 
