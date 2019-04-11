@@ -120,18 +120,8 @@ ggplot(dat) +
 
 ## 2.1 Exploratory correlations
 
-We first run correlations between all the COPE subscales and suicide ideation (```BSS_log```). Darker red indicates a more positive correlation. Darker blue indicates more negative.
-
-```{r, message =FALSE}
-
-M<-cor(dat[c(social.subscales,"BSS_log", "FCESD", "bai_total")], use = "pairwise.complete.obs")
-corrplot(M, method="circle", order="hclust",col=colorRampPalette(c("darkblue", "white", "darkred"))(100))
-
-```
-
-#### Filtering on statistical significance
-
-Now we want to make a version that filters for significance. To do this, we need to define a function that calculates p-values.
+We first run correlations between all the COPE subscales and suicide ideation (```BSS_log```). Darker red indicates a more positive correlation. Darker blue indicates more negative. Nonsignificant correlations (p>.05) how have an X drawn over them. (But please remember that [filtering on statistical significance leads to overconfident expectations of replicability](https://arxiv.org/pdf/1702.00556.pdf).)
+ 
 ```{r}
 # mat : is a matrix of data
 # ... : further arguments to pass to the native R cor.test function
@@ -149,10 +139,9 @@ cor.mtest <- function(mat, ...) {
   colnames(p.mat) <- rownames(p.mat) <- colnames(mat)
   p.mat
 }
-```
 
-And we use it to make our plot. Nonsignificant correlations (p>.05) how have an X drawn over them.
-```{r}
+M<-cor(dat[c(social.subscales,"BSS_log", "FCESD", "bai_total")], use = "pairwise.complete.obs")
+
 # matrix of the p-value of the correlation
 p.mat <- cor.mtest(dat[c(social.subscales,"BSS_log", "FCESD", "bai_total")])
 corrplot(M, type="lower", order="hclust", 
@@ -222,8 +211,8 @@ plot(fit, "areas", pars="beta",
 
 Let's think about what our model is saying. First of all, it appears that certain social variables may be more strongly associated with suicidality than depression or anxiety. Let's look at some of the subscales in more detail.
 
-#### ISEL Self-esteem
-ISEL Self-esteem is the strongest predictor of suicidal ideation in our sample--much stronger than depression or anxiety. This subscale is intended to represent "the perceived availability of a positive comparison when comparing one's self to others." Here are all 10 of the items from the scale:
+#### ISEL-Self-esteem
+ISEL-Self-esteem is the strongest predictor of suicidal ideation in our sample--much stronger than depression or anxiety. This subscale is intended to represent "the perceived availability of a positive comparison when comparing one's self to others." Here are all 10 of the items from the scale:
 
  * Most of my friends are more interesting than I am. (reverse-coded)
  * There is someone who takes pride in my accomplishments.
@@ -270,9 +259,9 @@ ggplot(dat) +
 
 
 
-#### ISEL Belonging
+#### ISEL-Belonging
 
-The ISEL belonging subscale is intended to capture "the perceived availability of people one can do things with." It consists of the following 10 items:
+The ISEL-Belonging subscale is intended to capture "the perceived availability of people one can do things with." It consists of the following 10 items:
 
 * When I feel lonely, there are several people I can talk to.
 * I often meet or talk with family or friends.
@@ -285,9 +274,11 @@ The ISEL belonging subscale is intended to capture "the perceived availability o
 * If I wanted to have lunch with someone, I could easily find someone to join me.
 * No one I know would throw a birthday party for me. (reverse coded)
 
-#### ISEL Tangible
+The inverse relationship between ISEL-Belonging and suicidal ideation isn't classically statistically significant, but the model suggests there's a >90% chance that it's real.  
 
-The ISEL Tangible subscale is intended to capture "perceived availability of material aid." If anything it predicts *increased* risk of suicidal ideation in our sample, after controlling for the other variables in the model. (If you remove the other COPE and ISEL variables from the model, ISEL-Tangible predicts decreased suicidality as you would expect.) The Tangible subscale consists of the following 10 items:
+#### ISEL-Tangible
+
+The ISEL-Tangible subscale is intended to capture "perceived availability of material aid." If anything it predicts *increased* risk of suicidal ideation in our sample, after controlling for the other variables in the model. The Tangible subscale consists of the following 10 items:
 
  * If I needed help fixing an appliance or repairing my car, there is someone who would help me.
  * If I needed a ride to the airport very early in the morning, I would have a hard time finding someone to take me. (reverse coded)
@@ -300,6 +291,8 @@ The ISEL Tangible subscale is intended to capture "perceived availability of mat
  * It would be difficult to find someone who would lend me their car for a few hours. (reverse coded)
  * If I needed some help in moving to a new house or apartment, I would have a hard time finding someone to help me. (reverse coded)
 
+It's hard to understand how items like these could predict increased suicidality even after controlling for other items in the model. (If you remove the other COPE and ISEL variables from the model, ISEL-Tangible predicts decreased suicidality as you would expect.)  
+
 #### COPE Emotional Social Support
 
 The ```emotional social support``` subscale consists of the following four items:
@@ -309,7 +302,7 @@ The ```emotional social support``` subscale consists of the following four items
  * I get sympathy and understanding from someone
  * I talk to someone about how I feel
 
-These are the specific kinds of coping strategies that may be associated with decreased suicidality *even after controlling for depression and anxiety.*
+These are the specific kinds of coping strategies that may be associated with decreased suicidality *even after controlling for depression and anxiety.* Not technically classically statistically significant, but it may as well be, as the model excludes zero with >95% probability.
 
 # 3.0 Suicide attempts and coping
 
@@ -335,14 +328,8 @@ ggplot(dat) +
 
 We first run correlations between all the COPE subscales and suicide attempts. In general, the relationships are weaker than those we measured with suicidal ideation. That's not suprising... The COPE and suicide ideation measures are roughly contemporaneous, whereas distant suicide attempts could have very little relationship with current coping styles.
 
-```{r, message =FALSE}
-
-M<-cor(dat[c(social.subscales,"attempts_log", "FCESD", "bai_total")], use = "pairwise.complete.obs")
-corrplot(M, method="circle", order="hclust",col=colorRampPalette(c("darkblue", "white", "darkred"))(100))
-```
-
-None of the correlations between coping styles and suicide attempts are classically statistically significant (log-transforms don't make much difference).
 ```{r}
+M<-cor(dat[c(social.subscales,"attempts_log", "FCESD", "bai_total")], use = "pairwise.complete.obs")
 p.mat <- cor.mtest(dat[c(social.subscales,"attempts_log", "FCESD", "bai_total")])
 corrplot(M, type="lower", order="hclust", 
          col=colorRampPalette(c("darkblue", "white", "darkred"))(100),
@@ -350,6 +337,7 @@ corrplot(M, type="lower", order="hclust",
          insig="pch", pch=4, pch.cex=1.5,
          pch.col=rgb(0,0,0,.4))
 ```
+None of the correlations between coping styles and suicide attempts are classically statistically significant (log-transforms don't make much difference).
 
 ### Does binarizing change anything?
 
