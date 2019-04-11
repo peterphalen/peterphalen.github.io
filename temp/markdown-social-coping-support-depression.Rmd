@@ -337,6 +337,7 @@ corrplot(M, type="lower", order="hclust",
          insig="pch", pch=4, pch.cex=1.5,
          pch.col=rgb(0,0,0,.4))
 ```
+
 None of the correlations between coping styles and suicide attempts are classically statistically significant (log-transforms don't make much difference).
 
 ### Does binarizing change anything?
@@ -352,11 +353,12 @@ Correlations aren't kosher with binary data, so we run 6 t-tests to see whether 
 ```{r, message=FALSE}
 t.tests <- lapply(dat[,as.character(social.subscales[1:length(social.subscales)])], function(x) t.test(x ~ dat$prior_attempt, var.equal = TRUE))
 # empty data.frame to store p.values
-p.values <- data.frame(empty.factor = "0", p.values = 1:length(t.tests))
+p.values <- data.frame(p.values = 1:length(t.tests))
 # fill data.frame with p.values
 for(test in 1:length(t.tests)){
   p.values[test,] <- t.tests[[test]]$p.value
 }
+p.values$empty.factor <- rep("0", times=nrow(p.values))
 ggplot(p.values) + 
   aes(x = p.values, y = empty.factor) + 
   geom_point(pch=19, cex=2, alpha=.8) +
@@ -366,7 +368,7 @@ ggplot(p.values) +
   theme(axis.ticks.y=element_blank(),
         axis.title.y=element_blank(),
         axis.text.y=element_blank()) + 
-  ggtitle("p-values for t-tests, plotted as points", subtitle = "p=.05 cutoff marked with vertical red line")
+  ggtitle("p-values for 6 t-tests, plotted as points", subtitle = ".05 cutoff marked with vertical red line")
 ```
 
 
