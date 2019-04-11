@@ -1,7 +1,7 @@
 ---
 title: Specific social supports and social coping behaviors may prevent suicidal ideation in male veterans with mental health difficulties
 author: "peter phalen"
-date: "4/10/2019"
+date: "4/11/2019"
 output: html_document
 ---
 
