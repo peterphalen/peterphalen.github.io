@@ -186,7 +186,7 @@ fit <- stan_lmer(BSS_log ~
                    scale(ISEL.selfesteem) +
                    scale(ISEL.appraisal),
                  iter=4000,
-                 adapt_delta=.975,
+                 adapt_delta=.999,
                  cores=4,
                  data=dat)
 ```
