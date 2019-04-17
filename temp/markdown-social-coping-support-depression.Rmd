@@ -303,7 +303,6 @@ ggplot(dat) +
   ggtitle("people scoring above the dotted line tended to have higher suicidal\nideation than people scoring below the dotted line")
 ```
 
-
 #### COPE Emotional Social Support
 
 The ```emotional social support``` subscale consists of the following four items:
@@ -379,7 +378,7 @@ ggplot(p.values) +
   theme(axis.ticks.y=element_blank(),
         axis.title.y=element_blank(),
         axis.text.y=element_blank()) + 
-  ggtitle("p-values for 6 t-tests, plotted as points", subtitle = ".05 cutoff marked with vertical red line")
+  ggtitle("p-values for six t-tests, plotted as points", subtitle = ".05 cutoff marked with vertical red line")
 ```
 
 
