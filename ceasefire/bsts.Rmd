@@ -1,5 +1,5 @@
 ---
-title: "Ceasefire effect modeled using bayesian structural time series"
+title: "Modeling shootings and the ceasefire effect using bayesian structural / state space time series model"
 author: "peter phalen"
 date: "4/17/2019"
 output: html_document
@@ -9,15 +9,16 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Modeling the ceasefire using a Bayesian state-space / structural time series
+In [this markdown](https://www.peterphalen.com/ceasefire/) I modeled shootings in Baltimore (from 2012-present) using a Bayesian generalized additive model. This has a lot of benefits mostly in terms of the ease of interpreting the model components and the ease of writing up the model (e.g., fitting a cubic spline is apparently equivalent to fitting a univariate local linear trend model using a Kalman filter). However, the approach is slightly non-standard in the time series literature. So, I wanted to redo everything with a state-space model, coded up in Stan, to show the similarity of the results.
 
-First we process all the data
-```{r cars}
+First we process all the data.
+```{r, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(rstan)
 library(lubridate)
 require(ggfortify)
 library(scales)
+library(bayesplot)
 
 # data came from here: https/:/data.baltimorecity.gov/Public-Safety/BPD-Part-1-Victim-Based-Crime-Data/wsfq-mvij/data
 # but I'm loading a copy that I backed up on github
@@ -53,14 +54,13 @@ ggplot(daily) +
           subtitle="Baltimore (2012-present)")
 ```
 
-We get variables together for day of the week (1-7) and week of the year (1-53) and a dummy code for ceasefire.
-```{r cars}
+We define variables for day of the week (1-7) and week of the year (1-53) and a dummy code for ceasefire.
+```{r}
 daily$weekday <- factor(weekdays(daily$CrimeDate),
                         levels=c("Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"))
 
 daily$day.of.year <- yday(daily$CrimeDate)
 daily$week.of.year <- week(daily$CrimeDate)
-
 
 ceasefire.initial <- 
   as.Date(
@@ -89,12 +89,12 @@ daily$ceasefire <- ifelse(daily$CrimeDate %in% ceasefire.weekends, 1, 0)
 
 ```
 
-Code up a bayesian structural time series model. (see https://github.com/sinhrks/stan-statespace)
+Code up a bayesian structural time series model. (see https://github.com/sinhrks/stan-statespace for examples of these)
 
 This model has an autoregressive stochastic level and slope, accounts for weekly and yearly seasonality, and includes a dummy code for the ceasefire.
 
 ```{r}
-# stochastic slope
+# stochastic level (mu) and slope (v)
 model_code <- "data {
   int<lower=1> n;
   int y[n];
@@ -136,16 +136,44 @@ model {
 
 ```
 
-
-
+Stan takes data as a list.
 ```{r}
-stan_data <- list(y <- daily$shootings
-                  n <- nrow(daily)
-                  weekday <- as.numeric(daily$weekday)
-                  J <- max(daily$week.of.year)
-                  ceasefire <- daily$ceasefire
+stan_data <- list(y <- daily$shootings,
+                  n <- nrow(daily),
+                  weekday <- as.numeric(daily$weekday),
+                  J <- max(daily$week.of.year),
+                  ceasefire <- daily$ceasefire,
                   week_of_year <- daily$week.of.year)
 ```
 
+Fit the model:
+```{r}
+fit <- stan(model_code=model_code, data=stan_data, cores=4, chains=4, iter = 500, control=list(adapt_delta=.9,max_treedepth=20))
+```
+
+Here's the trend plotted over the data:
+```{r}
+mu <- exp(get_posterior_mean(fit, pars="yhat")[, 'mean-all chains'])
+
+y <- ts(daily$shootings, start = c(2012, 1), frequency = 365)
+
+p <- autoplot(y, alpha=.2)
+yhat <- ts(mu, start = start(y), frequency = frequency(y))
+p <- autoplot(yhat, p = p, ts.colour="blue")
+p
+```
+
+You can already see the ceasefire effect as those little blue downward spikes in the far right of the series, but here is the estimated effect plotted directly as an odds ratio:
+
+```{r, message=FALSE, warning=FALSE}
+ceasefire.effect <- as.array(fit, pars = "ceasefire_effect") 
+# scale to an odds ratio by exponentiating
+ceasefire.effect <- exp(ceasefire.effect)
+mcmc_intervals(ceasefire.effect) + 
+  xlab("odds ratio") +
+  xlim(c(0,1))
+```
+
+Despite the very different model specification, this finding matches the [GAM model](https://www.peterphalen.com/ceasefire/) almost perfectly.
 
 
