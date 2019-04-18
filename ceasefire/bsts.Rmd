@@ -99,19 +99,18 @@ model_code <- "data {
   int y[n];
   int J;
   int<upper=7> weekday[n];
-  int<lower=1,upper=J> week_of_year[n];
   int<lower=0,upper=1> ceasefire[n];
 }
 parameters {
   vector[n] mu;
   vector[n-1] v;
   vector[7] weekday_effect;
-  vector[J] week_of_year_effect;
+  vector[n] seasonal;
   real ceasefire_effect;
   real<lower=0> sigma_weekday;
   real<lower=0> sigma_drift;
   real<lower=0> sigma_level;
-  real<lower=0> sigma_woy;
+  real<lower=0> sigma_seas;
 }
 transformed parameters {
   vector[n] yhat;
@@ -120,17 +119,21 @@ transformed parameters {
   }
 }
 model {
-  week_of_year_effect ~ normal(0,sigma_woy);
-  sigma_woy ~ normal(0,2);
   weekday_effect ~ normal(0,sigma_weekday);
   sigma_weekday ~ normal(0,2);
+  sigma_seas ~ inv_gamma(0.001, 0.001);
+
+   # frequency = 53
+  for(t in 53:n) {
+    seasonal[t] ~ normal(-seasonal[t-52] - seasonal[t-51] - seasonal[t-50] - seasonal[t-49] - seasonal[t-48] - seasonal[t-47] - seasonal[t-46] - seasonal[t-45] - seasonal[t-44] - seasonal[t-43] - seasonal[t-42] - seasonal[t-41] - seasonal[t-40] - [t-39] - seasonal[t-38] - seasonal[t-37] - seasonal[t-36] - seasonal[t-35] - seasonal[t-34] - seasonal[t-33] - [t-32] - seasonal[t-31] - seasonal[t-30] - seasonal[t-29] - seasonal[t-28] - seasonal[t-27] - seasonal[t-26] - seasonal[t-25] - seasonal[t-24] - seasonal[t-23] - seasonal[t-22] - seasonal[t-21] - [t-20] - seasonal[t-19] - seasonal[t-18] - seasonal[t-17] - seasonal[t-16] - seasonal[t-15] - seasonal[t-14] - seasonal[t-13] - seasonal[t-12] - seasonal[t-11] - seasonal[t-10] - seasonal[t-9] - seasonal[t-8] - seasonal[t-7] - seasonal[t-6] - seasonal[t-5] - seasonal[t-4] - seasonal[t-3] - seasonal[t-2] - seasonal[t-1], sigma_seas);
+  }
 
   for(t in 2:n)
     mu[t] ~ normal(mu[t-1] + v[t-1], sigma_level);
   for(t in 2:n-1)
     v[t] ~ normal(v[t-1], sigma_drift);
   for(t in 1:n)
-    y[t] ~ poisson_log(yhat[t] + weekday_effect[weekday[t]] + week_of_year_effect[week_of_year[t]]);
+    y[t] ~ poisson_log(yhat[t] + weekday_effect[weekday[t]] + seasonal[t]);
 }"
 
 ```
@@ -150,7 +153,7 @@ Fit the model:
 fit <- stan(model_code=model_code, data=stan_data, cores=4, chains=4, iter = 500, control=list(adapt_delta=.9,max_treedepth=20))
 ```
 
-Here's the trend plotted over the data:
+Here's the trend plotted over the data (trend in blue, observed time series in grey):
 ```{r}
 mu <- exp(get_posterior_mean(fit, pars="yhat")[, 'mean-all chains'])
 
