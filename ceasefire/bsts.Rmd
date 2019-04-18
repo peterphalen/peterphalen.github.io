@@ -59,7 +59,6 @@ We define variables for day of the week (1-7) and week of the year (1-53) and a 
 daily$weekday <- factor(weekdays(daily$CrimeDate),
                         levels=c("Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"))
 
-daily$day.of.year <- yday(daily$CrimeDate)
 daily$week.of.year <- week(daily$CrimeDate)
 
 ceasefire.initial <- 

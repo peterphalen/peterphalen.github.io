@@ -418,7 +418,6 @@ daily &lt;- daily %&gt;% group_by(CrimeDate) %&gt;% mutate_all(funs(ifelse(is.na
 <pre class="r"><code>daily$weekday &lt;- factor(weekdays(daily$CrimeDate),
                         levels=c(&quot;Monday&quot;,&quot;Tuesday&quot;,&quot;Wednesday&quot;,&quot;Thursday&quot;,&quot;Friday&quot;,&quot;Saturday&quot;,&quot;Sunday&quot;))
 
-daily$day.of.year &lt;- yday(daily$CrimeDate)
 daily$week.of.year &lt;- week(daily$CrimeDate)
 
 ceasefire.initial &lt;- 
