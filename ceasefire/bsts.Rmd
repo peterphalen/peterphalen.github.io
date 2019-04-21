@@ -84,41 +84,67 @@ daily$ceasefire <- ifelse(daily$CrimeDate %in% ceasefire.weekends, 1, 0)
 
 ```
 
-We code up a bayesian structural time series model. This model was mostly built with reference to https://github.com/sinhrks/stan-statespace, except that they had seasonality represented with this equation $$\gamma_t  \text{ ~ }  \mathcal{N}(\sum_{j=1}^{s-1} \gamma_{t-j},\sigma_{seas})$$ which is unacceptably slow due to the size of the yearly season when the data is daily, so reformulated to the equivalent $$\gamma_t\text{ ~ }  \mathcal{N}(-sum(\gamma_{(t-s+1):(t-1)}), \sigma_{seas})$$. 
+We code up a bayesian structural time series model. This model was initially constructed with reference to https://github.com/sinhrks/stan-statespace, except that they had seasonality represented with this equation $$\gamma_t  \text{ ~ }  \mathcal{N}(\sum_{j=1}^{s-1} \gamma_{t-j},\sigma_{seas})$$ which is unacceptably slow due to the size of the yearly season when the data is daily, so reformulated [with help from the stan community](https://discourse.mc-stan.org/t/structural-time-series-with-seasonality-sampling-very-slowly/8552/13).
 
-The model has an autoregressive stochastic level, accounts for yearly seasonality, and includes a dummy code for the ceasefire. In any case, here is the code:
+The model has an autoregressive stochastic level, accounts for yearly and weekly seasonality, and includes a dummy code for the ceasefire. In any case, here is the code:
 
 ```{r}
 model_code <- "data {
-  int<lower=1> n;
-  int y[n];
+  int<lower=1> n;   // n = 2632
+  int y[n]; // number of shootings per day
   vector<lower=0,upper=1>[n] ceasefire;
 }
+transformed data {
+  int<lower=1,upper=365> yday[n];
+  int<lower=1,upper=7> wday[n];
+  for (i in 1:n) yday[i] = i % 365 + 1;
+  for (i in 1:n) wday[i] = i % 7 + 1;
+}
 parameters {
-  vector[n] mu; // stochastic level
-  real ceasefire_effect;
-  vector[n] y_seasonal;
-  vector[n] w_seasonal;
-  real<lower=0> sigma_level;
+  real baseline;
+  vector[n] mu_innovations;
+  vector[365] y_seasonal_innovations; // yearly seasonality 
+  vector[7] w_seasonal_innovations; // weekly seasonality 
+
+  real<lower=0> sigma_mu;
   real<lower=0> sigma_yday;
   real<lower=0> sigma_wday;
+
+  real ceasefire_effect;
+}
+transformed parameters {
+  // zero-mean seasonal terms
+  vector[365] y_seasonal;
+  vector[7] w_seasonal;
+
+  vector[n] mu;
+  { vector[365] y_seasonal_with_trend;
+    real y_trend;
+    y_seasonal_with_trend = cumulative_sum(y_seasonal_innovations);
+    y_trend = y_seasonal_with_trend[365];
+    for (i in 1:365)
+        y_seasonal[i] = sigma_yday/100 * (y_seasonal_with_trend[i] - y_trend * i/365.0); 
+  }
+  
+  { vector[7] w_seasonal_with_trend;
+    real w_trend;
+    w_seasonal_with_trend = cumulative_sum(w_seasonal_innovations);
+    w_trend = w_seasonal_with_trend[7];
+    for (i in 1:7)
+        w_seasonal[i] = sigma_wday/100 * (w_seasonal_with_trend[i] - w_trend * i/7.0); 
+  }
+
+  mu = sigma_mu/100 * cumulative_sum(mu_innovations);
 }
 model {
-  for (t in 365:n){
-    y_seasonal[t] ~ normal(-sum(y_seasonal[(t-364):(t-1)]), sigma_yday);
-  }
+  y_seasonal_innovations ~ normal(0, 1);
+  w_seasonal_innovations ~ normal(0, 1);
+  mu_innovations ~ normal(0, 1);
   
-  for (t in 7:n){
-    w_seasonal[t] ~ normal(-sum(w_seasonal[(t-6):(t-1)]), sigma_wday);
-  }
-  
-  sigma_yday ~ inv_gamma(.001,.001);
-  sigma_wday ~ inv_gamma(.001,.001);
-  sigma_level ~ normal(0, .5);
-
-  mu[2:n] ~ normal(mu[1:(n-1)], sigma_level);
-  y ~ poisson_log(mu + y_seasonal + w_seasonal + ceasefire_effect * ceasefire);
-}"
+  y ~ poisson_log(baseline + mu + y_seasonal[yday] + w_seasonal[wday] + ceasefire_effect * ceasefire);
+  sigma_mu ~ lognormal(-3.5 + log(100), 2);
+  sigma_yday ~ lognormal(-3.5 + log(100), 2);
+} "
 
 ```
 
@@ -133,28 +159,38 @@ stan_data <- list(y <- daily$shootings,
 Fit the model (this takes a long time):
 
 ```{r}
-fit <- stan(model_code=model_code, data=stan_data, cores=4, chains=4, iter = 500, control=list(adapt_delta=.95, max_treedepth=20))
+fit <- stan(model_code=model_code, data=stan_data, cores=3, chains=3, iter = 500, control=list(adapt_delta=.95, max_treedepth=15))
 ```
 
 Here's the yearly seasonal component estimated by the model (on the untransformed scale). 
 
 ```{r}
 seasonal <- get_posterior_mean(fit, pars="y_seasonal")[, 'mean-all chains']
-seasonal <- ts(seasonal, start = c(2012, 1), frequency = 365)
+seasonal <- ts(seasonal)
 autoplot(seasonal, ts.colour = 'blue') + ggtitle("yearly seasonal component")
 ```
+
 And a weekly seasonal component.
 
 ```{r}
 seasonal <- get_posterior_mean(fit, pars="w_seasonal")[, 'mean-all chains']
-seasonal <- ts(seasonal, start = c(2012, 1), frequency = 365)
-autoplot(seasonal, ts.colour = 'blue') + ggtitle("weekly seasonal component")
+
+# associate index with weekday names
+daily$weekday <- weekdays(daily$CrimeDate)
+daily$weekday <- factor(daily$weekday,
+levels=c("Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"))
+week_names <- head(daily$weekday,7)
+seasonal <- data.frame(day = week_names, effect=seasonal)
+
+ggplot(seasonal) + aes(x = day, y = effect, group=1) + geom_line()
 ```
 
-And here's the local linear trend (stochastic level) plotted over the data (trend in blue, observed time series in grey):
+And here's the local linear trend plotted over the data (trend in blue, observed time series in grey):
 
 ```{r}
-yhat <- get_posterior_mean(fit, pars="yhat")[, 'mean-all chains']
+mu <- get_posterior_mean(fit, pars="mu")[, 'mean-all chains'] 
+baseline <- get_posterior_mean(fit, pars="baseline")[, 'mean-all chains'] 
+yhat <- baseline + mu
 yhat <- exp(yhat) 
 
 y <- ts(daily$shootings, start = c(2012, 1), frequency = 365)
@@ -165,7 +201,7 @@ p <- autoplot(yhat, p = p, ts.colour="blue")
 p + ggtitle("trend")
 ```
 
-You can already see the ceasefire effect as those little blue downward spikes in the far right of the series, but here is the estimated effect plotted directly as an odds ratio:
+And here is the estimated effect of Ceasefire, plotted directly as an odds ratio:
 
 ```{r, message=FALSE, warning=FALSE}
 ceasefire.effect <- as.array(fit, pars = "ceasefire_effect") 
@@ -176,9 +212,6 @@ mcmc_intervals(ceasefire.effect) +
   xlim(c(0,1))
 ```
 
-Despite the very different model specification, this finding matches the [GAM model](https://www.peterphalen.com/ceasefire/) very well.
-
-
-
+Despite the very different model specification, this finding matches the [GAM model](https://www.peterphalen.com/ceasefire/) almost perfectly.
 
 
