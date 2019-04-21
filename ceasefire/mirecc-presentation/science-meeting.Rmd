@@ -451,9 +451,7 @@ mcmc_intervals(exp(as.array(m2, regex_pars = "ceasefire"))) +
 We can use the model to estimate the impact of the next Ceasefire in Baltimore, which begins on Friday May 10th, 2019:
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-### Ceasefire plot
 
-# Ref: Friday 2019
 pred.day <- as.Date("2019-05-10")
 ceasefire.frame <- with(daily, 
                   data.frame(
@@ -471,21 +469,32 @@ post <- posterior_linpred(m2,
 ceasefire.frame$Estimate <- apply(post,2, median)
 
 # 95% CI
-ci <- apply(post,2,function(x){quantile(x, prob=c(.025, .975))})
-ceasefire.frame$low <- ci["2.5%",]
-ceasefire.frame$high <- ci["97.5%",]
+ci <- apply(post,2,function(x){quantile(x, prob=c(.25, .75))})
+ceasefire.frame$low <- ci["25%",]
+ceasefire.frame$high <- ci["75%",]
+
+# 50% posterior predictive interval for main plot
+preds <- posterior_predict(m2,
+                          newdata=ceasefire.frame,
+                          transform=TRUE)
+
+ceasefire.frame$high.ppd <- apply(preds,2,function(x){quantile(x, prob=c(.75), na.rm=T)})
+ceasefire.frame$low.ppd <- apply(preds,2,function(x){quantile(x, prob=c(.25), na.rm=T)})
 
 ceasefire.frame %>% 
   ggplot() +
   aes(x=ceasefire, y=Estimate) +
+  geom_point(aes(y = low.ppd), col="blue", shape=95, size=5) +
+  geom_point(aes(y = high.ppd), col="blue", shape=95, size=5) +
   geom_point(aes(y = Estimate),
              size=2) +
   geom_errorbar(aes(ymin=low, ymax=high), 
                 width=.2) +
+
   xlab("") + 
   ylab("Shootings") +
-  ggtitle("Predicted shooting count, Friday May 10th, 2019",
-          subtitle="with 95% credible intervals") +
+  ggtitle("Predicted shooting count for Friday May 10, 2019",
+          subtitle="with 50% credible intervals (black) and posterior predictive intervals (blue)") +
   theme_bw()
 ```
 
