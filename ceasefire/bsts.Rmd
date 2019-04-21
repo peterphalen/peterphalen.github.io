@@ -1,7 +1,7 @@
 ---
 title: "Modeling shootings and the ceasefire effect using bayesian structural / state space time series model"
 author: "peter phalen"
-date: "4/17/2019"
+date: "4/21/2019"
 output: html_document
 ---
 
