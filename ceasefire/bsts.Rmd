@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-In [this markdown](https://www.peterphalen.com/ceasefire/) I modeled shootings in Baltimore (from 2012-present) using a Bayesian generalized additive model. This has a lot of benefits mostly in terms of the ease of interpreting the model components and the ease of writing up the model (e.g., fitting a cubic spline is apparently equivalent to fitting a univariate local linear trend model using a Kalman filter). However, the approach is slightly non-standard in the time series literature. So, I wanted to redo everything with a state-space model, coded up in Stan, to show the similarity of the results.
+In [this markdown](https://www.peterphalen.com/ceasefire/) I model shootings in Baltimore (from 2012-present) using a Bayesian generalized additive model. This has a lot of benefits mostly in terms of the ease of interpreting the model components and the ease of writing up the model (e.g., fitting a cubic spline is apparently equivalent to fitting a univariate local linear trend model using a Kalman filter). However, the approach is slightly non-standard in the time series literature. So, I wanted to redo everything with a state-space model, coded up in Stan, to show the similarity of the results.
 
 First we process all the data.
 ```{r, message=FALSE, warning=FALSE}
@@ -54,13 +54,9 @@ ggplot(daily) +
           subtitle="Baltimore (2012-present)")
 ```
 
-We define variables for day of the week (1-7) and week of the year (1-53) and a dummy code for ceasefire.
+We define a dummy code for ceasefire.
+
 ```{r}
-daily$weekday <- factor(weekdays(daily$CrimeDate),
-                        levels=c("Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"))
-
-daily$week.of.year <- week(daily$CrimeDate)
-
 ceasefire.initial <- 
   as.Date(
     c("08/04/2017",
@@ -88,81 +84,85 @@ daily$ceasefire <- ifelse(daily$CrimeDate %in% ceasefire.weekends, 1, 0)
 
 ```
 
-Code up a bayesian structural time series model. (see https://github.com/sinhrks/stan-statespace for examples of these)
+We code up a bayesian structural time series model. This model was mostly built with reference to https://github.com/sinhrks/stan-statespace, except that they had seasonality represented with this equation $$\gamma_t  \text{ ~ }  \mathcal{N}(\sum_{j=1}^{s-1} \gamma_{t-j},\sigma_{seas})$$ which is unacceptably slow due to the size of the yearly season when the data is daily, so reformulated to the equivalent $$\gamma_t\text{ ~ }  \mathcal{N}(-sum(\gamma_{(t-s+1):(t-1)}), \sigma_{seas})$$. 
 
-This model has an autoregressive stochastic level and slope, accounts for weekly and yearly seasonality, and includes a dummy code for the ceasefire.
+The model has an autoregressive stochastic level, accounts for yearly seasonality, and includes a dummy code for the ceasefire. In any case, here is the code:
 
 ```{r}
-# stochastic level (mu) and slope (v)
 model_code <- "data {
   int<lower=1> n;
   int y[n];
-  int J;
-  int<upper=7> weekday[n];
-  int<lower=0,upper=1> ceasefire[n];
+  vector<lower=0,upper=1>[n] ceasefire;
 }
 parameters {
-  vector[n] mu;
-  vector[n-1] v;
-  vector[7] weekday_effect;
-  vector[n] seasonal;
+  vector[n] mu; // stochastic level
   real ceasefire_effect;
-  real<lower=0> sigma_weekday;
-  real<lower=0> sigma_drift;
+  vector[n] y_seasonal;
+  vector[n] w_seasonal;
   real<lower=0> sigma_level;
-  real<lower=0> sigma_seas;
-}
-transformed parameters {
-  vector[n] yhat;
-  for(t in 1:n) {
-    yhat[t] = mu[t] + ceasefire_effect * ceasefire[t];
-  }
+  real<lower=0> sigma_yday;
+  real<lower=0> sigma_wday;
 }
 model {
-  weekday_effect ~ normal(0,sigma_weekday);
-  sigma_weekday ~ normal(0,2);
-  sigma_seas ~ inv_gamma(0.001, 0.001);
-
-   # frequency = 53
-  for(t in 53:n) {
-    seasonal[t] ~ normal(-seasonal[t-52] - seasonal[t-51] - seasonal[t-50] - seasonal[t-49] - seasonal[t-48] - seasonal[t-47] - seasonal[t-46] - seasonal[t-45] - seasonal[t-44] - seasonal[t-43] - seasonal[t-42] - seasonal[t-41] - seasonal[t-40] - [t-39] - seasonal[t-38] - seasonal[t-37] - seasonal[t-36] - seasonal[t-35] - seasonal[t-34] - seasonal[t-33] - [t-32] - seasonal[t-31] - seasonal[t-30] - seasonal[t-29] - seasonal[t-28] - seasonal[t-27] - seasonal[t-26] - seasonal[t-25] - seasonal[t-24] - seasonal[t-23] - seasonal[t-22] - seasonal[t-21] - [t-20] - seasonal[t-19] - seasonal[t-18] - seasonal[t-17] - seasonal[t-16] - seasonal[t-15] - seasonal[t-14] - seasonal[t-13] - seasonal[t-12] - seasonal[t-11] - seasonal[t-10] - seasonal[t-9] - seasonal[t-8] - seasonal[t-7] - seasonal[t-6] - seasonal[t-5] - seasonal[t-4] - seasonal[t-3] - seasonal[t-2] - seasonal[t-1], sigma_seas);
+  for (t in 365:n){
+    y_seasonal[t] ~ normal(-sum(y_seasonal[(t-364):(t-1)]), sigma_yday);
   }
+  
+  for (t in 7:n){
+    w_seasonal[t] ~ normal(-sum(w_seasonal[(t-6):(t-1)]), sigma_wday);
+  }
+  
+  sigma_yday ~ inv_gamma(.001,.001);
+  sigma_wday ~ inv_gamma(.001,.001);
+  sigma_level ~ normal(0, .5);
 
-  for(t in 2:n)
-    mu[t] ~ normal(mu[t-1] + v[t-1], sigma_level);
-  for(t in 2:n-1)
-    v[t] ~ normal(v[t-1], sigma_drift);
-  for(t in 1:n)
-    y[t] ~ poisson_log(yhat[t] + weekday_effect[weekday[t]] + seasonal[t]);
+  mu[2:n] ~ normal(mu[1:(n-1)], sigma_level);
+  y ~ poisson_log(mu + y_seasonal + w_seasonal + ceasefire_effect * ceasefire);
 }"
 
 ```
 
 Stan takes data as a list.
+
 ```{r}
 stan_data <- list(y <- daily$shootings,
                   n <- nrow(daily),
-                  weekday <- as.numeric(daily$weekday),
-                  J <- max(daily$week.of.year),
-                  ceasefire <- daily$ceasefire,
-                  week_of_year <- daily$week.of.year)
+                  ceasefire <- daily$ceasefire)
 ```
 
-Fit the model:
+Fit the model (this takes a long time):
+
 ```{r}
-fit <- stan(model_code=model_code, data=stan_data, cores=4, chains=4, iter = 500, control=list(adapt_delta=.9,max_treedepth=20))
+fit <- stan(model_code=model_code, data=stan_data, cores=4, chains=4, iter = 500, control=list(adapt_delta=.95, max_treedepth=20))
 ```
 
-Here's the trend plotted over the data (trend in blue, observed time series in grey):
+Here's the yearly seasonal component estimated by the model (on the untransformed scale). 
+
 ```{r}
-mu <- exp(get_posterior_mean(fit, pars="yhat")[, 'mean-all chains'])
+seasonal <- get_posterior_mean(fit, pars="y_seasonal")[, 'mean-all chains']
+seasonal <- ts(seasonal, start = c(2012, 1), frequency = 365)
+autoplot(seasonal, ts.colour = 'blue') + ggtitle("yearly seasonal component")
+```
+And a weekly seasonal component.
+
+```{r}
+seasonal <- get_posterior_mean(fit, pars="w_seasonal")[, 'mean-all chains']
+seasonal <- ts(seasonal, start = c(2012, 1), frequency = 365)
+autoplot(seasonal, ts.colour = 'blue') + ggtitle("weekly seasonal component")
+```
+
+And here's the local linear trend (stochastic level) plotted over the data (trend in blue, observed time series in grey):
+
+```{r}
+yhat <- get_posterior_mean(fit, pars="yhat")[, 'mean-all chains']
+yhat <- exp(yhat) 
 
 y <- ts(daily$shootings, start = c(2012, 1), frequency = 365)
 
 p <- autoplot(y, alpha=.2)
-yhat <- ts(mu, start = start(y), frequency = frequency(y))
+yhat <- ts(yhat, start = start(y), frequency = frequency(y))
 p <- autoplot(yhat, p = p, ts.colour="blue")
-p
+p + ggtitle("trend")
 ```
 
 You can already see the ceasefire effect as those little blue downward spikes in the far right of the series, but here is the estimated effect plotted directly as an odds ratio:
@@ -176,6 +176,9 @@ mcmc_intervals(ceasefire.effect) +
   xlim(c(0,1))
 ```
 
-Despite the very different model specification, this finding matches the [GAM model](https://www.peterphalen.com/ceasefire/) almost perfectly.
+Despite the very different model specification, this finding matches the [GAM model](https://www.peterphalen.com/ceasefire/) very well.
+
+
+
 
 
