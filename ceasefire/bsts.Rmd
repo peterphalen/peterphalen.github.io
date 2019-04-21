@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-In [this markdown](https://www.peterphalen.com/ceasefire/) I model shootings in Baltimore (from 2012-present) using a Bayesian generalized additive model. This has a lot of benefits mostly in terms of the ease of interpreting the model components and the ease of writing up the model (e.g., fitting a cubic spline is apparently equivalent to fitting a univariate local linear trend model using a Kalman filter). However, the approach is slightly non-standard in the time series literature. So, I wanted to redo everything with a state-space model, coded up in Stan, to show the similarity of the results.
+In [this markdown](https://www.peterphalen.com/ceasefire/) I had modeled shootings in Baltimore (from 2012-present) using a Bayesian generalized additive model. This has a lot of benefits mostly in terms of the ease of interpreting the model components and the ease of writing up the model (e.g., fitting a cubic spline is apparently equivalent to fitting a univariate local linear trend model using a Kalman filter). However, the approach is slightly non-standard in the time series literature. So, I wanted to redo everything with a state-space model, coded up in Stan, to show the similarity of the results.
 
 First we process all the data.
 ```{r, message=FALSE, warning=FALSE}
