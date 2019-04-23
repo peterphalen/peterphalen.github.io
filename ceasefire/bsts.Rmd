@@ -144,6 +144,7 @@ model {
   y ~ poisson_log(baseline + mu + y_seasonal[yday] + w_seasonal[wday] + ceasefire_effect * ceasefire);
   sigma_mu ~ lognormal(-3.5 + log(100), 2);
   sigma_yday ~ lognormal(-3.5 + log(100), 2);
+  sigma_wday ~ lognormal(-3.5 + log(100), 2);
 } "
 
 ```
