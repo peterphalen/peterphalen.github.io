@@ -1,15 +1,14 @@
 graphics.off()
 rm(list=ls(all=TRUE))
 
-
-fileNameRoot="WisconsinTempAR1Jags" # for constructing output filenames
+library(tidverse)
 
 #------------------------------------------------------------------------------
 # THE DATA.
 
 # Temperature data from
 # http://academic.udayton.edu/kissock/http/Weather/default.htm
-dataMat = read.table( "/Users/peterphalen/Downloads/WIMADISO.txt" , 
+dataMat = read_csv( "https://www.peterphalen.com/temp/WIMADISO.txt" , 
                       col.names=c("Month","Date","Year","AveTemp") )
 cityName = "Madison, Wisconsin"
 
