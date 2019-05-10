@@ -110,7 +110,7 @@ model {
 " # close quote for modelstring
 
 fit <- stan(model_code=modelstring, data=dataList, 
-            cores=4, iter=1000)
+            cores=4, iter=2000)
 
 #------------------------------------------------------------------------------
 # EXAMINE THE RESULTS
