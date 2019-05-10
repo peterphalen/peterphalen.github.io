@@ -1,14 +1,14 @@
 graphics.off()
 rm(list=ls(all=TRUE))
 
-library(tidverse)
+library(rstan)
 
 #------------------------------------------------------------------------------
 # THE DATA.
 
 # Temperature data from
 # http://academic.udayton.edu/kissock/http/Weather/default.htm
-dataMat = read_csv( "https://www.peterphalen.com/temp/WIMADISO.txt" , 
+dataMat = read.table( "https://www.peterphalen.com/temp/WIMADISO.txt" , 
                       col.names=c("Month","Date","Year","AveTemp") )
 cityName = "Madison, Wisconsin"
 
@@ -29,8 +29,8 @@ for ( i in 1:length(Jul1RowIdx) ) {
         dataMat[Jul1RowIdx[i],"Year"] , adj=c(0.5,0), cex=.5 )
 }
 
-# Re-name data for use in JAGS model:
-x = 1:NROW(dataMat)
+# Re-name data for use in Stan model:
+x = 1:nrow(dataMat)
 y = as.vector(dataMat[,"AveTemp"])
 
 # Clip to integer number of cycles, to minimize influence of end effects:
@@ -60,7 +60,8 @@ daysPerYear = 365.24219 # Tropical Year. Will be used instead of estimating wl.
 dataList = list(
   x = x ,
   y = y ,
-  N = length(x)
+  N = length(x),
+  wl = daysPerYear/(2*pi) 
 )
 
 #------------------------------------------------------------------------------
@@ -70,6 +71,7 @@ data {
   int<lower=0> N;
   vector[N] x;
   vector[N] y;
+  real wl;
 }
 
 parameters{
@@ -79,8 +81,8 @@ parameters{
   real<lower=-183,upper=183> phase; // plus and minus half cycle
   real beta0;
   real beta1;
-  real nu;
-  real<lower=0> wl;
+  real<lower=0> nu;
+//  real wl;  // commented out
 }
 
 model {
@@ -100,26 +102,24 @@ model {
   amp ~ normal( 25 , 10 );
   phase ~ normal( 0 , 50 ); 
   nu ~ exponential(0.04);
-  wl ~ normal(58,.5);
+ // wl ~ normal(58.1,.25);
   y ~ student_t(nu, // df
                 mu, 
                 sigma);
 }
 " # close quote for modelstring
 
-fit <- stan(model_code=modelstring, data=dataList, cores=4, iter=1000)
+fit <- stan(model_code=modelstring, data=dataList, 
+            cores=4, iter=1000)
 
 #------------------------------------------------------------------------------
 # EXAMINE THE RESULTS
 
-# Convert coda-object codaSamples to matrix object for easier handling.
-# But note that this concatenates the different chains into one long chain.
-# Result is mcmcChain[ stepIdx , paramIdx ]
 mcmcChain = as.data.frame( fit )
 
-elapsed_time <- paste("model took",round(max(rowSums(get_elapsed_time(fit)))/60,1),
+elapsed_time <- round(max(rowSums(get_elapsed_time(fit)))/60,1)
+elapsed_time <- paste("model took",elapsed_time,
                       "minutes to fit in stan")
-
 
 # Plot data with posterior predictive curves:
 layout( matrix( c(rep(1,4),1+1:8) , nrow=3 , byrow=TRUE) , heights=c(2,1) )
@@ -149,10 +149,9 @@ hist( mcmcChain[,"amp"] , xlab="Deg. F" , main="Amplitude" )
 hist( mcmcChain[,"phase"] , 
                      xlab=paste("Days since",centerMonth,"/",centerDate) , 
                      main="Peak Temp. Day" )
-hist( mcmcChain[,"wl"] * 2 * pi , xlab="days" , main="estimated year length" )
-
 hist( mcmcChain[,"ar1"] , xlab="AR(1) Coef." , main="AR(1) Coef." )
 hist( mcmcChain[,"sigma"] , xlab="Deg. F" , main="SD noise" )
-hist( mcmcChain[,"nu"] , xlab="nu" , main="Normality"  )
+hist( mcmcChain[,"nu"] , xlab="student t df" , main="Normality"  )
+# hist( mcmcChain[,"wl"] * 2 * pi, xlab="days" , main="empirical year length" )
 
 #------------------------------------------------------------------------------
