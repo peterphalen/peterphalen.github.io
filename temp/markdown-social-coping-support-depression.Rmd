@@ -183,8 +183,8 @@ fit <- stan_lmer(BSS_log ~
                    scale(COPE.emotional.social.support) +
                    scale(ISEL.tangible) +
                    scale(ISEL.belonging) +
-                   scale(ISEL.selfesteem) +
-                   scale(ISEL.appraisal),
+                   scale(ISEL.appraisal) +
+                   scale(ISEL.selfesteem) ,
                  iter=4000,
                  adapt_delta=.999,
                  cores=4,
@@ -293,11 +293,71 @@ The ISEL-Tangible subscale is intended to capture "perceived availability of mat
 
 It's hard to understand how items like these could predict increased suicidality even after controlling for other items in the model. 
 
-If you remove every other COPE and ISEL variable from the model, ISEL-Tangible predicts decreased suicidality as you would expect. Taking out ISEL-Belonging makes the most difference in this respect, which gives us a better way of understanding the negative relationship between ISEL-Tangible and SI in the multivariate model:
+We might suspect that the problem is multicollinearity, as (e.g.) ISEL-Tangible and ISEL-Belonging are strongly correlated (see correlation matrix above). We can actually check this by analyzing the posterior samples.
+
+```{r, warnings=FALSE}
+ggpairs(as.data.frame(fit, regex_pars = c("ISEL.tangible", "ISEL.belonging", "ISEL.selfesteem", "ISEL.appraisal", "bai_total", "FCESD", "COPE.emotional.social.support")),
+        lower=list(continuous=wrap("points", col=rgb(0,0,0.2,alpha=.2))))
+```
+
+So multicollinearity doesn't seem to be a big problem for *estimation.* But we can see a negative correlation between the coefficient estimates for ISEL-Tangible and the estimates for ISEL-Belonging and ISEL-Appraisal, which means that attributing greater increases in suicidality to ISEL-Belonging or ISEL-Appraisal requires attributing lesser increases to ISEL-Tangible. 
+
+If we remove these two variables from the model, ISEL-Tangible no longer substantially predicts increased suicidal ideation.  
+
+```{r}
+fit.less <- stan_lmer(BSS_log ~
+                   (1 | marital) +
+                   (1 | race ) +
+                   # z-score the continuous predictors to put them on a common scale
+                   scale(yr_edu) +
+                   scale(Age) +
+                   scale(FCESD) + 
+                   scale(bai_total) +
+                   scale(COPE.emotional.social.support) +
+                   # scale(ISEL.tangible) +
+                    scale(ISEL.belonging) +
+                    scale(ISEL.appraisal) +
+                   scale(ISEL.selfesteem) ,
+                 iter=4000,
+                 cores=4,
+                 data=dat)
+plot(fit.less, regex_pars="tangible")
+```
+
+It's still a little unexpected that tbIf we look at the pairs plot again, we can see a
+
+```{r}
+ggpairs(as.data.frame(fit.less, regex_pars = c("ISEL.tangible","bai_total", "ISEL.selfesteem", "FCESD", "COPE.emotional.social.support")),
+        lower=list(continuous=wrap("points", col=rgb(0,0,0.2,alpha=.2))))
+```
+
+```{r}
+fit.even.less <- stan_lmer(BSS_log ~
+                   (1 | marital) +
+                   (1 | race ) +
+                   # z-score the continuous predictors to put them on a common scale
+                   scale(yr_edu) +
+                   scale(Age) +
+                   scale(FCESD) + 
+                   scale(bai_total) +
+                   # scale(COPE.emotional.social.support) +
+                   scale(ISEL.tangible) +
+                   # scale(ISEL.belonging) +
+                   # scale(ISEL.appraisal) +
+                   scale(ISEL.selfesteem) ,
+                 iter=4000,
+                 cores=4,
+                 data=dat)
+plot(fit.even.less, regex_pars="tangible")
+```
+
+
+
+This gives us a better way of understanding the negative relationship between ISEL-Tangible and SI in the multivariate model:
 
 ```{r}
 ggplot(dat) + 
-  aes(x = ISEL.belonging, y = ISEL.tangible) + 
+  aes(x = ISEL.selfesteem, y = ISEL.tangible) + 
   geom_point() + 
   geom_smooth(method="lm", se=FALSE, col = "black", lty=2) + 
   ggtitle("people scoring above the dotted line tended to have higher suicidal\nideation than people scoring below the dotted line")
