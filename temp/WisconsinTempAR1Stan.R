@@ -73,7 +73,6 @@ data {
   vector[N] y;
   real wl;
 }
-
 parameters{
   real<lower=-1.2,upper=1.1> ar1;
   real<lower=0> sigma;
@@ -85,14 +84,15 @@ parameters{
 //  real wl;  // commented out
 }
 
-model {
+transformed parameters{
   vector[N] trend; 
-  vector[N] mu;
+  trend = beta0 + beta1 * x + amp * cos( ( x - phase ) / wl );
+}
 
-  trend[1] = beta0 + beta1 * x[1] + amp * cos( ( x[1] - phase ) / wl );
-  mu[1] = trend[1];
+model {
+  vector[N] mu;
   
-  trend[2:N] = beta0 + beta1 * x[2:N] + amp * cos( ( x[2:N] - phase ) / wl );
+  mu[1] = trend[1];
   mu[2:N] = trend[2:N] + ar1 * ( y[1:(N-1)] - trend[1:(N-1)] );
     
   ar1 ~ normal( 0 , 0.5 );
@@ -107,19 +107,24 @@ model {
                 mu, 
                 sigma);
 }
-" # close quote for modelstring
+" 
 
-fit <- stan(model_code=modelstring, data=dataList, 
-            cores=4, iter=2000)
+
+m <- stan_model(model_code=modelstring)
+
+# time <- system.time(fit <- vb(m, data=dataList))
+time <- system.time(fit <- sampling(m, data=dataList, 
+             cores=4, iter=2000))
+
+elapsed_time <- time[[3]]
+elapsed_time <- paste("model took",round(elapsed_time/60,2),
+                      "minutes to fit in stan")
 
 #------------------------------------------------------------------------------
 # EXAMINE THE RESULTS
 
-mcmcChain = as.data.frame( fit )
-
-elapsed_time <- round(max(rowSums(get_elapsed_time(fit)))/60,1)
-elapsed_time <- paste("model took",elapsed_time,
-                      "minutes to fit in stan")
+mcmcChain <- as.data.frame( fit )
+trendSamples <- as.data.frame( fit , pars="trend")
 
 # Plot data with posterior predictive curves:
 layout( matrix( c(rep(1,4),1+1:8) , nrow=3 , byrow=TRUE) , heights=c(2,1) )
@@ -135,20 +140,21 @@ for ( i in 1:length(Jul1RowIdx) ) {
   text( Jul1RowIdx[i]+x[1] , min(dataMat$AveTemp,na.rm=TRUE) , 
         dataMat[Jul1RowIdx[i],"Year"] , adj=c(0.5,0) )
 }
-curvesToPlot = round(seq(1,nrow(mcmcChain),length=20))
+curvesToPlot <- sample(1:nrow(mcmcChain), 20) 
 for ( i in curvesToPlot ) {
- lines( x , 
-        mcmcChain[i,"beta0"] + mcmcChain[i,"beta1"]*x + 
-          mcmcChain[i,"amp"] * cos( ( x - mcmcChain[i,"phase"] ) / dataList$wl ) ,
-        col="skyblue" , lwd=2 )
+  lines( x , 
+         trendSamples[i,],
+         col=rgb(.5, .8, .9, alpha=.5),
+         lwd=2)
 }
+
 hist( mcmcChain[,"beta0"] , xlab="Deg. F" , main="Intercept")       
 hist( mcmcChain[,"beta1"]*daysPerYear , xlab="Deg. F / Year" ,
-                     main="Linear Trend"  )
+      main="Linear Trend"  )
 hist( mcmcChain[,"amp"] , xlab="Deg. F" , main="Amplitude" )
 hist( mcmcChain[,"phase"] , 
-                     xlab=paste("Days since",centerMonth,"/",centerDate) , 
-                     main="Peak Temp. Day" )
+      xlab=paste("Days since",centerMonth,"/",centerDate) , 
+      main="Peak Temp. Day" )
 hist( mcmcChain[,"ar1"] , xlab="AR(1) Coef." , main="AR(1) Coef." )
 hist( mcmcChain[,"sigma"] , xlab="Deg. F" , main="SD noise" )
 hist( mcmcChain[,"nu"] , xlab="student t df" , main="Normality"  )
