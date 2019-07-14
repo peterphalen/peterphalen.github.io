@@ -1,11 +1,12 @@
+
 ---
-title: Specific social supports and social coping behaviors may prevent suicidal ideation in male veterans with mental health difficulties
+title: Specific social coping behaviors and social supports that may impact suicidality
 author: "peter phalen"
-date: "4/11/2019"
+date: "June 29 2019"
 output: html_document
 ---
 
-Recent ideation-to-action theories of suicide have hypothesized that social factors are highly relevant to suicidality, which is a theoretical innovation. Since then, there has been quite a bit of research into the exact way in which the stress associated with interpersonal relationships (e.g., thwarted belongingness, perceived burdnesomeness) can contribute to increased suicidality. However, there has been less research into the specific ways in which intact social relationships might function to prevent against suicidality.
+Suicide researchers have long hypothesized that social factors are highly relevant to suicidality. There has been quite a bit of research into the exact way in which the stress associated with interpersonal relationships (e.g., thwarted belongingness, perceived burdnesomeness) can contribute to increased suicidality. However, there has been less research into the specific ways in which social coping might function to prevent against suicidality.
 
 In this paper, we use the [Interpersonal Support Evaluation List](http://www.midss.org/sites/default/files/interpersonal_support_evaluation_list_and_scoring_isel.pdf) (ISEL) and the [COPE inventory](http://www.midss.org/sites/default/files/cope.pdf) to test for specific ways in which social relationships might buffer against suicidality in people who are at high risk.
  
@@ -14,6 +15,10 @@ library(tidyverse)
 library(rstanarm)
 library(GGally)
 library(corrplot)
+library(bayesplot)
+library(loo)
+library(projpred)
+library(knitr)
 ```
 
 The sample consists of 50 male veterans diagnosed with depression. 
@@ -21,6 +26,7 @@ The sample consists of 50 male veterans diagnosed with depression.
 ```{r, message=F}
 setwd("/Users/peterphalen/Downloads/JAHNDATA/")
 dat <- read_csv("suicide_combined_all.csv")
+
 
 # restrict to people with complete COPE data
 dat <- dat[which(dat$cope_complete == 2),]
@@ -39,6 +45,7 @@ dat <- within(dat,
                 ISEL.belonging = ISEL_BS
                 ISEL.selfesteem = ISEL_SE
                 ISEL.appraisal = ISEL_AS
+                BSS_sum = as.integer(BSS_sum)
               })
 
 # save subscale names as a vector so we don't have to keep retyping
@@ -78,6 +85,13 @@ Collapse people with unreported race (n=1) together with people who have multipl
 levels(dat$race)[which(levels(dat$race) == "Multiple")] <- "Other"
 dat[is.na(dat$race),"race"] <- "Other" 
 summary(dat$race)
+```
+
+Create "AA" and "married" variable to make modeling easier
+
+```{r}
+table(dat$AA <- as.numeric(dat$race == "Black"))
+table(dat$married <- as.numeric(dat$marital == "married"))
 ```
 
 
@@ -155,13 +169,15 @@ corrplot(M, type="lower", order="hclust",
 
 Look at relationship between SI and the statistically significant variables in some more detail.
 
-```{r, message=FALSE,warning=FALSE}
+If you look at the items, you can see that CESD Depression and ISEL-Self Esteem basically measure the same thing. They're also 
 
-ggpairs(subset(dat, select=c(COPE.instrumental.social.support,
+```{r, message=FALSE}
+ggpairs(subset(dat, select=c(FCESD,
+                             ISEL.selfesteem,
+                             COPE.instrumental.social.support,
                              COPE.emotional.social.support,
                              ISEL.tangible,
                              ISEL.belonging,
-                             ISEL.selfesteem,
                              ISEL.appraisal,
                              BSS_log)),
         lower=list(continuous=wrap("smooth", col=rgb(0,0,0,alpha=.5))))
@@ -171,24 +187,30 @@ ggpairs(subset(dat, select=c(COPE.instrumental.social.support,
 ## 2.2 Multivariate analysis
 
 Fit model, z-scoring continuous variables so that coefficients are easily comparable.
-```{r}
-fit <- stan_lmer(BSS_log ~
-                   (1 | marital) +
-                   (1 | race ) +
+```{r fit first stan model}
+# need to do this to avoid errors in projpred due to missing irrelevant variables
+dat.sub <- subset(dat, select=c(married, AA, yr_edu, Age, FCESD, bai_total, 
+                                COPE.emotional.social.support, ISEL.tangible, ISEL.belonging,
+                                ISEL.appraisal, ISEL.selfesteem, BSS_sum))
+fit <- stan_glm(BSS_sum ~ 
+                    scale(married) +
+                    scale(AA) +
                    # z-score the continuous predictors to put them on a common scale
-                   scale(yr_edu) +
-                   scale(Age) +
-                   scale(FCESD) + 
-                   scale(bai_total) +
-                   scale(COPE.emotional.social.support) +
-                   scale(ISEL.tangible) +
-                   scale(ISEL.belonging) +
-                   scale(ISEL.appraisal) +
-                   scale(ISEL.selfesteem) ,
-                 iter=4000,
-                 adapt_delta=.999,
+                    scale(yr_edu) +
+                    scale(Age) +
+                    scale(FCESD) +
+                    scale(bai_total) +
+                    scale(COPE.emotional.social.support) +
+                    scale(ISEL.tangible) +
+                    scale(ISEL.belonging) +
+                    # scale(ISEL.selfesteem) +
+                    scale(ISEL.appraisal)
+                ,
+                 iter=6000,
                  cores=4,
-                 data=dat)
+                QR=T,
+                family=poisson,
+                 data=dat.sub)
 ```
 
 The model accounts for nearly 70% of the variance in suicidal ideation, which is very, very good.
@@ -198,187 +220,131 @@ r2 <- bayes_R2(fit)
 median(r2)
 ```
 
-
 Plot parameter estimates with 95% credible intervals and 80% credible intervals shaded.
 
 ```{r}
-plot(fit, "areas", pars="beta", 
-     prob_outer=.95, prob=.8)
+plot(fit, "areas", pars="beta", prob_outer=.95, prob=.8)
 ```
 
+It's weird that ISEL-Tangible--a measure of instrumental social support (e.g. "If I were sick, I could easily find someone to help me with my daily chores")--could predict *increased* suicidality. We might suspect that the problem is multicollinearity, as (e.g.) ISEL-Tangible and ISEL-Belonging are strongly correlated (see correlation matrix above). We can actually check this by analyzing the posterior samples.
+
+```{r, warnings=FALSE, message=FALSE}
+ggpairs(as.data.frame(fit, regex_pars = c("ISEL.tangible", "ISEL.belonging", "ISEL.appraisal", "bai_total", "FCESD", "COPE.emotional.social.support")),
+        lower=list(continuous=wrap("points", col=rgb(0,0,0.2,alpha=.2))))
+```
+
+We can see a fairly strong negative correlation between the coefficient estimates for ISEL-Tangible and the estimate for ISEL-Belonging, which means that attributing greater increases in suicidality to ISEL-Belonging requires attributing lesser increases to ISEL-Tangible. 
+
+Here's a method of selecting variables in the context of multicollinearity using projective predictive variable selection (see https://avehtari.github.io/modelselection/collinear.html).
+
+```{r k-fold cross-validation}
+fit_cv <- cv_varsel(fit, method="forward")
+vars <- names(fit_cv$vind)
+kable(data.frame(rank = 1:length(fit_cv$vind), vars = vars))
+varsel_plot(fit_cv, deltas=T)
+```
+
+Looks like the right number of variables may be 2 or 6, but the difference between 2 and 6 is negligible
+```{r}
+stats <- varsel_stats(fit_cv)
+stats[which(stats$size==2),]
+stats[which(stats$size==6),]
+suggest_size(fit_cv, baseline="best")
+```
+
+So we'll stick with two variables...
+
+```{r}
+# we'll stick with two...
+nv <- 2 
+# implied coefficient estimates for selected submodel
+proj2 <- project(fit_cv, nv = nv, ns = 4000)
+round(colMeans(as.matrix(proj2)),1)
+```
+
+```{r}
+# Visualise the three most relevant variables in the full model
+mcmc_areas(as.matrix(fit), 
+           pars = c('(Intercept)', names(fit_cv$vind[1:nv]))) + 
+  coord_cartesian(xlim = c(-2, 2))
+
+# Visualise the projected three most relevant variables
+proj <- project(fit_cv, nv = nv, ns = 500)
+mcmc_areas(as.matrix(proj)) + coord_cartesian(xlim = c(-2, 2))
+```
+
+Refit model with variables selected from above. 
+
+```{r}
+fit2 <- stan_glm(BSS_sum ~ 
+                   scale(FCESD) + 
+                   scale(COPE.emotional.social.support),
+                 iter=6000,
+                 adapt_delta=.999,
+                 cores=4,
+                family=poisson,
+                 data=dat.sub)
+plot(fit2,"areas")
+```
 
 ## 2.3 Interpretation
 
-Let's think about what our model is saying. First of all, it appears that certain social variables may be more strongly associated with suicidality than depression or anxiety. Let's look at some of the subscales in more detail.
+Let's think about what our model is saying.
 
-#### ISEL-Self-esteem
-ISEL-Self-esteem is the strongest predictor of suicidal ideation in our sample--much stronger than depression or anxiety. This subscale is intended to represent "the perceived availability of a positive comparison when comparing one's self to others." Here are all 10 of the items from the scale:
+#### FCESD
 
- * Most of my friends are more interesting than I am. (reverse-coded)
- * There is someone who takes pride in my accomplishments.
- * Most people I know think highly of me.
- * I think that my friends feel that I’m not very good at helping them solve their problems. (reverse-coded)
- * I am as good at doing things as most other people are.
- * In general, people do not have much confidence in me. (reverse-coded)
- * Most of my friends are more successful at making changes in their lives than I am. (reverse-coded)
- * I am more satisfied with my life than most people are with theirs.
- * I am closer to my friends than most other people are to theirs.
- * I have a hard time keeping pace with my friends. (reverse-coded)
- 
-These are social items but they really zero in on self-esteem. It reads a lot like a measure of depression, albeit through a social lense. It's interesting that the scale predicts suicidality so much better than the CESD. 
-
-Because model coefficients can be hard to interpret, here we create a plot of ISEL-Self-esteem and suicidality, with the model prediction drawn as a line. Remember, this line represents the relationship between ISEL-Self-esteem and suicidality after controlling for other variables in the model constant, including depression.
+First depression. This one is straightforward.
 
 ```{r}
-
+range.FCESD <- range(dat$FCESD)
+spread <- seq(range.FCESD[1], range.FCESD[2], by = .5)
 newdata <- data.frame(
-  COPE.emotional.social.support = mean(dat$COPE.emotional.social.support),
-  FCESD = mean(dat$FCESD),
-  bai_total = mean(dat$bai_total),
-  ISEL.tangible = mean(dat$ISEL.tangible),
-  ISEL.belonging = mean(dat$ISEL.belonging),
-  ISEL.selfesteem = 0:30,
-  ISEL.appraisal = mean(dat$ISEL.appraisal),
-  yr_edu = mean(dat$yr_edu),
-  Age = mean(dat$Age),
-  race=0,
-  marital=0)
-
-pred.BSS_log <- posterior_linpred(fit,
-                newdata=newdata,
-                re.form=NA)
-pred.BSS_log <- apply(pred.BSS_log,2,mean)
-preds <- data.frame( ISEL.selfesteem = 0:30,
-            BSS_sum = exp(pred.BSS_log )
-            )
+  FCESD = spread,
+  COPE.emotional.social.support = mean(dat$COPE.emotional.social.support))
+preds <- posterior_linpred(fit2, newdata=newdata, transform=TRUE)
+preds <- apply(preds, 2, median)
+preds <- data.frame( FCESD = spread,
+            BSS_sum = preds)
 ggplot(dat) + 
-  aes(y=BSS_sum,x=ISEL.selfesteem) + 
+  aes(y=BSS_sum,x=FCESD) + 
   geom_point(alpha=.3) + 
   geom_line(data=preds, col="blue")
 ```
 
 
+#### COPE - Emotional Social Support
 
-#### ISEL-Belonging
+The emotional social support subscale consists of the following four items:
 
-The ISEL-Belonging subscale is intended to capture "the perceived availability of people one can do things with." It consists of the following 10 items:
+* I discuss my feelings with someone
+* I try to get emotional support from friends or relatives
+* I get sympathy and understanding from someone
+* I talk to someone about how I feel
 
-* When I feel lonely, there are several people I can talk to.
-* I often meet or talk with family or friends.
-* I feel like I’m not always included by my circle of friends. (reverse coded)
-* There are several different people I enjoy spending time with.
-* If I wanted to go on a trip for a day (e.g., to the mountains, beach, or country), I would have a hard time finding someone to go with me. (reverse coded)
-* If I decide one afternoon that I would like to go to a movie that evening, I could easily find someone to go with me.
-* Most people I know do not enjoy the same things that I do. (reverse coded)
-* I don’t often get invited to do things with others. (reverse coded)
-* If I wanted to have lunch with someone, I could easily find someone to join me.
-* No one I know would throw a birthday party for me. (reverse coded)
-
-The inverse relationship between ISEL-Belonging and suicidal ideation isn't classically statistically significant, but the model suggests there's a >90% chance that it's real.  
-
-#### ISEL-Tangible
-
-The ISEL-Tangible subscale is intended to capture "perceived availability of material aid." Its zero-order relationship with SI is negative as you would expect, but in the multivariate model it predicts *increased* risk of suicidal ideation after controlling for the other variables. The Tangible subscale consists of the following 10 items:
-
- * If I needed help fixing an appliance or repairing my car, there is someone who would help me.
- * If I needed a ride to the airport very early in the morning, I would have a hard time finding someone to take me. (reverse coded)
- * If I were sick and needed someone (friend, family member, or acquaintance) to take me to the doctor, I would have trouble finding someone. (reverse coded)
- * If I needed a place to stay for a week because of an emergency (for example, water or electricity out in my apartment or house), I could easily find someone who would put me up.
- * If I were sick, I could easily find someone to help me with my daily chores.
- * If I needed an emergency loan of $100, there is someone (friend, relative, or acquaintance) I could get it from.
- * If I had to go out of town for a few weeks, it would be difficult to find someone who would look after my house or apartment (the plants, pets, garden, etc.). (reverse coded)
- * If I was stranded 10 miles from home, there is someone I could call who would come and get me. 
- * It would be difficult to find someone who would lend me their car for a few hours. (reverse coded)
- * If I needed some help in moving to a new house or apartment, I would have a hard time finding someone to help me. (reverse coded)
-
-It's hard to understand how items like these could predict increased suicidality even after controlling for other items in the model. 
-
-We might suspect that the problem is multicollinearity, as (e.g.) ISEL-Tangible and ISEL-Belonging are strongly correlated (see correlation matrix above). We can actually check this by analyzing the posterior samples.
-
-```{r, warnings=FALSE}
-ggpairs(as.data.frame(fit, regex_pars = c("ISEL.tangible", "ISEL.belonging", "ISEL.selfesteem", "ISEL.appraisal", "bai_total", "FCESD", "COPE.emotional.social.support")),
-        lower=list(continuous=wrap("points", col=rgb(0,0,0.2,alpha=.2))))
-```
-
-So multicollinearity doesn't seem to be a big problem for *estimation.* But we can see a negative correlation between the coefficient estimates for ISEL-Tangible and the estimates for ISEL-Belonging and ISEL-Appraisal, which means that attributing greater increases in suicidality to ISEL-Belonging or ISEL-Appraisal requires attributing lesser increases to ISEL-Tangible. 
-
-If we remove these two variables from the model, ISEL-Tangible no longer substantially predicts increased suicidal ideation.  
+These are the specific kinds of coping strategies that may be associated with decreased suicidality even after controlling for depression.
 
 ```{r}
-fit.less <- stan_lmer(BSS_log ~
-                   (1 | marital) +
-                   (1 | race ) +
-                   # z-score the continuous predictors to put them on a common scale
-                   scale(yr_edu) +
-                   scale(Age) +
-                   scale(FCESD) + 
-                   scale(bai_total) +
-                   scale(COPE.emotional.social.support) +
-                   # scale(ISEL.tangible) +
-                    scale(ISEL.belonging) +
-                    scale(ISEL.appraisal) +
-                   scale(ISEL.selfesteem) ,
-                 iter=4000,
-                 cores=4,
-                 data=dat)
-plot(fit.less, regex_pars="tangible")
-```
-
-It's still a little unexpected that tbIf we look at the pairs plot again, we can see a
-
-```{r}
-ggpairs(as.data.frame(fit.less, regex_pars = c("ISEL.tangible","bai_total", "ISEL.selfesteem", "FCESD", "COPE.emotional.social.support")),
-        lower=list(continuous=wrap("points", col=rgb(0,0,0.2,alpha=.2))))
-```
-
-```{r}
-fit.even.less <- stan_lmer(BSS_log ~
-                   (1 | marital) +
-                   (1 | race ) +
-                   # z-score the continuous predictors to put them on a common scale
-                   scale(yr_edu) +
-                   scale(Age) +
-                   scale(FCESD) + 
-                   scale(bai_total) +
-                   # scale(COPE.emotional.social.support) +
-                   scale(ISEL.tangible) +
-                   # scale(ISEL.belonging) +
-                   # scale(ISEL.appraisal) +
-                   scale(ISEL.selfesteem) ,
-                 iter=4000,
-                 cores=4,
-                 data=dat)
-plot(fit.even.less, regex_pars="tangible")
-```
-
-
-
-This gives us a better way of understanding the negative relationship between ISEL-Tangible and SI in the multivariate model:
-
-```{r}
+range.COPE.ess <- range(dat$COPE.emotional.social.support)
+spread <- seq(range.COPE.ess[1], range.COPE.ess[2], by = .5)
+newdata <- data.frame(
+  FCESD = mean(dat$FCESD),
+  COPE.emotional.social.support = spread)
+preds <- posterior_linpred(fit2, newdata=newdata, transform=TRUE)
+preds <- apply(preds, 2, median)
+preds <- data.frame( COPE.emotional.social.support = spread,
+            BSS_sum = preds)
 ggplot(dat) + 
-  aes(x = ISEL.selfesteem, y = ISEL.tangible) + 
-  geom_point() + 
-  geom_smooth(method="lm", se=FALSE, col = "black", lty=2) + 
-  ggtitle("people scoring above the dotted line tended to have higher suicidal\nideation than people scoring below the dotted line")
+  aes(y=BSS_sum,x=COPE.emotional.social.support) + 
+  geom_point(alpha=.3) + 
+  geom_line(data=preds, col="blue")
 ```
-
-#### COPE Emotional Social Support
-
-The ```emotional social support``` subscale consists of the following four items:
-
- * I discuss my feelings with someone
- * I try to get emotional support from friends or relatives
- * I get sympathy and understanding from someone
- * I talk to someone about how I feel
-
-These are the specific kinds of coping strategies that may be associated with decreased suicidality *even after controlling for depression and anxiety.* Not technically classically statistically significant, but it may as well be, as the model excludes zero with >95% probability.
 
 # 3.0 Suicide attempts and coping
 
-The next step is to look at the relationship between COPE subscales and suicide attempts (as opposed to ideation). 
 
-Here's the distribution of suicide attempts in the sample. About 50% have attempted suicide before, and about 20% of the sample has multiple attempts.
+The next step is to look at the relationship between COPE subscales and suicide attempts (as opposed to ideation).
+
+Here’s the distribution of suicide attempts in the sample. About 50% have attempted suicide before, and about 20% of the sample has multiple attempts.
 
 ```{r}
 ggplot(dat) + 
@@ -386,21 +352,19 @@ ggplot(dat) +
   geom_bar()
 ```
 
-Again, it probably makes sense to log-transform. After all, the difference between 0 and 1 suicide attempts is intuitively much greater than the difference between 1 and 2 suicide attempts.
+
+We first run correlations between all the COPE subscales and suicide attempts. In general, the relationships are weaker than those we measured with suicidal ideation. That’s not suprising… The COPE and suicide ideation measures are roughly contemporaneous, whereas distant suicide attempts could have very little relationship with current coping styles.
 
 ```{r}
 dat$attempts_log <- log(dat$cssrs_12c_total_attempt + 1)
-ggplot(dat) + 
-  aes(x = attempts_log) +
-  geom_bar()
+M<-cor(dat[c(social.subscales,"attempts_log")], use = "pairwise.complete.obs")
+corrplot(M, method="circle", order="hclust",col=colorRampPalette(c("darkblue", "white", "darkred"))(100))
 ```
 
-
-We first run correlations between all the COPE subscales and suicide attempts. In general, the relationships are weaker than those we measured with suicidal ideation. That's not suprising... The COPE and suicide ideation measures are roughly contemporaneous, whereas distant suicide attempts could have very little relationship with current coping styles.
+None of the correlations between coping styles and suicide attempts are classically statistically significant (log-transforms don’t make much difference).
 
 ```{r}
-M<-cor(dat[c(social.subscales,"attempts_log", "FCESD", "bai_total")], use = "pairwise.complete.obs")
-p.mat <- cor.mtest(dat[c(social.subscales,"attempts_log", "FCESD", "bai_total")])
+p.mat <- cor.mtest(dat[c(social.subscales,"attempts_log")])
 corrplot(M, type="lower", order="hclust", 
          col=colorRampPalette(c("darkblue", "white", "darkred"))(100),
          p.mat = p.mat, sig.level = 0.05,
@@ -408,29 +372,28 @@ corrplot(M, type="lower", order="hclust",
          pch.col=rgb(0,0,0,.4))
 ```
 
-None of the correlations between coping styles and suicide attempts are classically statistically significant (log-transforms don't make much difference).
+#### Does binarizing change anything?
 
-### Does binarizing change anything?
-
-Maybe we're reading too far into the number of suicide attempts... Suicide attempts are common in this sample, but in the general population, *any* history of suicide attempt would make you an outlier. So, we could try treating prior suicide attempts as a binary rather than a continuous variable.
+Maybe we’re reading too far into the number of suicide attempts… Suicide attempts are common in this sample, but in the general population, any history of suicide attempt would make you an outlier. So, we could try treating prior suicide attempts as a binary rather than a continuous variable.
 
 ```{r}
 dat$prior_attempt <- dat$cssrs_12c_total_attempt > 0
 table(dat$prior_attempt)
 ```
 
-Correlations aren't kosher with binary data, so we run 6 t-tests to see whether people with prior suicide attempts endorse the social subscales to different degrees. However, none of the p-values are anywhere near the mystical .05 cutoff.
-```{r, message=FALSE}
-t.tests <- lapply(dat[,as.character(social.subscales[1:length(social.subscales)])], function(x) t.test(x ~ dat$prior_attempt, var.equal = TRUE))
+Correlations aren’t kosher with binary data, so we run 15 t-tests to see whether people with prior suicide attempts endorse the 15 COPE subscales to different degrees. However, only 1 of the 15 tests is significant (and only barely), so best not to overthink it.
+
+```{r}
+n.tests <- length(social.subscales)
+t.tests <- lapply(dat[,as.character(social.subscales[1:n.tests])], function(x) t.test(x ~ dat$prior_attempt, var.equal = TRUE))
 # empty data.frame to store p.values
-p.values <- data.frame(p.values = 1:length(t.tests))
+p.values <- data.frame(p.values = 1:n.tests)
 # fill data.frame with p.values
-for(test in 1:length(t.tests)){
+for(test in 1:n.tests){
   p.values[test,] <- t.tests[[test]]$p.value
 }
-p.values$empty.factor <- rep("0", times=nrow(p.values))
 ggplot(p.values) + 
-  aes(x = p.values, y = empty.factor) + 
+  aes(x = p.values, y = 0) + 
   geom_point(pch=19, cex=2, alpha=.8) +
   geom_vline(xintercept=.05, col="red") + 
   xlim(0,1) +
@@ -438,7 +401,7 @@ ggplot(p.values) +
   theme(axis.ticks.y=element_blank(),
         axis.title.y=element_blank(),
         axis.text.y=element_blank()) + 
-  ggtitle("p-values for six t-tests, plotted as points", subtitle = ".05 cutoff marked with vertical red line")
+  ggtitle(paste("t-tests for",n.tests,"subscales"), subtitle = "p=.05 cutoff marked with vertical red line")
 ```
 
 
