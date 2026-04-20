@@ -2718,7 +2718,7 @@ table.alt tfoot {
                 #titleBar .toggle:before {
                     -moz-osx-font-smoothing: grayscale;
                     -webkit-font-smoothing: antialiased;
-                    font-family: FontAwesome;
+                    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
                     font-style: normal;
                     font-weight: normal;
                     text-transform: none !important;
