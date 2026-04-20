@@ -45,6 +45,10 @@ body {
     -webkit-text-size-adjust: none;
 }
 
+cite {
+  font-style: italic;
+}
+
 .fade {
     -webkit-animation-name:fadeIn;
     -webkit-animation-duration:.8s;
