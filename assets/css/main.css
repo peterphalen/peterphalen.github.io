@@ -457,6 +457,7 @@ footer.site a:hover { color: var(--accent); }
     gap: 36px;
     padding: 32px 22px 60px;
   }
+  .role { display: none; }
   aside.side {
     position: static;
     max-height: none;
