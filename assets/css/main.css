@@ -146,28 +146,25 @@ aside.side::-webkit-scrollbar { width: 0; }
   color: var(--text-soft);
   transition: background 140ms ease, color 140ms ease;
 }
-.side-nav a:visited {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 7px 10px;
-  border-radius: 6px;
-  color: var(--text-soft);
-  transition: background 140ms ease, color 140ms ease;
-}
-.side-nav a:hover,
+
 .side-nav a.is-active {
   background: var(--bg-2);
   color: var(--text);
 }
-.side-nav a.is-active { color: var(--accent); }
 .side-nav a .arrow {
   opacity: 0;
   transform: translateX(-4px);
   transition: opacity 140ms, transform 140ms;
 }
-.side-nav a:hover .arrow,
 .side-nav a.is-active .arrow { opacity: 1; transform: translateX(0); }
+
+@media (hover: hover) {
+  .side-nav a:hover {
+    background: var(--bg-2);
+    color: var(--text);
+  }
+  .side-nav a:hover .arrow { opacity: 1; transform: translateX(0); }
+}
 
 .side-links {
   font-family: "JetBrains Mono", ui-monospace, monospace;
