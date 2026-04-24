@@ -317,9 +317,10 @@ section.block { margin-bottom: 56px; }
   margin: 0;
 }
 .works .inner p a {
-  color: var(--text);
+  color: inherit;
   border-bottom: 1px solid var(--line);
   transition: border-color 160ms, color 160ms;
+  text-decoration: none; 
 }
 .works .inner p a:hover { color: var(--accent); border-color: var(--accent); }
 
