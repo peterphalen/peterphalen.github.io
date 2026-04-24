@@ -149,7 +149,7 @@ aside.side::-webkit-scrollbar { width: 0; }
 
 .side-nav a.is-active {
   background: var(--bg-2);
-  color: var(--text);
+  color: var(--accent);
 }
 .side-nav a .arrow {
   opacity: 0;
@@ -158,7 +158,7 @@ aside.side::-webkit-scrollbar { width: 0; }
 }
 .side-nav a.is-active .arrow { opacity: 1; transform: translateX(0); }
 
-@media (hover: hover) {
+@media (any-hover: hover) {
   .side-nav a:hover {
     background: var(--bg-2);
     color: var(--text);
