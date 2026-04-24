@@ -146,6 +146,15 @@ aside.side::-webkit-scrollbar { width: 0; }
   color: var(--text-soft);
   transition: background 140ms ease, color 140ms ease;
 }
+.side-nav a:visited {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 10px;
+  border-radius: 6px;
+  color: var(--text-soft);
+  transition: background 140ms ease, color 140ms ease;
+}
 .side-nav a:hover,
 .side-nav a.is-active {
   background: var(--bg-2);
