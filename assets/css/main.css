@@ -95,7 +95,9 @@ aside.side::-webkit-scrollbar { width: 0; }
   object-fit: cover;
   border: 1px solid var(--line);
   margin-bottom: 18px;
+  display: block;
 }
+.avatar-link { display: inline-block; line-height: 0; border: 0; }
 .name {
   font-size: 17px;
   font-weight: 600;
