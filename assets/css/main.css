@@ -330,7 +330,10 @@ section.block { margin-bottom: 56px; }
   transition: border-color 160ms, color 160ms;
   text-decoration: none; 
 }
-.works .inner p a:hover { color: var(--accent); border-color: var(--accent); }
+.works .inner p a:hover { 
+  color: var(--accent); 
+  border-color: var(--accent); 
+}
 
 .works .image {
   width: 96px;
