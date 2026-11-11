@@ -390,12 +390,15 @@ section.block { margin-bottom: 56px; }
 .pubs .pub .cite .title {
   color: var(--text);
   font-weight: 500;
-  transition: color 160ms;
-  border-bottom: 1px solid transparent;
+  transition: color 160ms, border-color 160ms;
+  border-bottom: 1px dashed var(--text-muted);
 }
 .pubs .pub .cite .title:hover {
   color: var(--accent);
+  border-bottom: 1px;
+  border-bottom-style: solid;
   border-bottom-color: var(--accent);
+
 }
 .pubs .pub .cite .title.no-link { border-bottom: none; }
 .pubs .pub .cite .title.no-link:hover { color: var(--text); }
